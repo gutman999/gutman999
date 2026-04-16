@@ -99,6 +99,7 @@ function formatMonthYear(date: Date) {
 export default function Dashboard() {
   const [inputs, setInputs] = useState<ModelInputs>(baseline);
   const [activePreset, setActivePreset] = useState<ScenarioPreset | null>(null);
+  const [presentationMode, setPresentationMode] = useState(false);
 
   const update = <K extends keyof ModelInputs>(key: K, value: ModelInputs[K]) => {
     setActivePreset(null);
@@ -199,22 +200,49 @@ export default function Dashboard() {
   }, [inputs]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <div className="mb-8 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
-          <div className="mb-4 flex items-center gap-3">
+    <main
+      className={`min-h-screen bg-slate-950 text-white ${
+        presentationMode ? "text-[1.03rem]" : ""
+      }`}
+    >
+      <div
+        className={`mx-auto max-w-7xl px-6 ${presentationMode ? "py-8" : "py-10"}`}
+      >
+        <div
+          className={`mb-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur ${
+            presentationMode ? "p-6" : "p-8"
+          }`}
+        >
+          <div className="mb-4 flex items-start justify-between gap-3">
             <div className="rounded-2xl bg-cyan-400/15 p-3">
               <Beaker className="h-6 w-6 text-cyan-300" />
             </div>
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
+            <div className="flex-1">
+              <h1
+                className={`font-semibold tracking-tight ${
+                  presentationMode ? "text-4xl" : "text-3xl"
+                }`}
+              >
                 Retatrutide Time-to-Market Optimizer
               </h1>
-              <p className="mt-1 text-sm text-slate-300">
-                Strategic simulation for how digital workflow improvements could
-                compress launch readiness for an investigational obesity therapy.
-              </p>
+              {!presentationMode ? (
+                <p className="mt-1 text-sm text-slate-300">
+                  Strategic simulation for how digital workflow improvements could
+                  compress launch readiness for an investigational obesity therapy.
+                </p>
+              ) : null}
             </div>
+            <button
+              type="button"
+              onClick={() => setPresentationMode((prev) => !prev)}
+              className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors ${
+                presentationMode
+                  ? "border-cyan-300 bg-cyan-300/20 text-cyan-100"
+                  : "border-white/15 bg-slate-900/70 text-slate-200 hover:border-cyan-300/70 hover:text-white"
+              }`}
+            >
+              Presentation Mode
+            </button>
           </div>
 
           <section className="mb-6 rounded-2xl border border-white/10 bg-slate-900/60 p-5">
@@ -231,42 +259,50 @@ export default function Dashboard() {
             </ul>
           </section>
 
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className={`grid ${presentationMode ? "gap-3" : "gap-4"} md:grid-cols-4`}>
             <KpiCard
               icon={<CalendarDays className="h-5 w-5 text-cyan-300" />}
               label="Projected Launch"
               value={results.optimizedLaunch}
               subValue={`Baseline: ${results.baselineLaunch}`}
+              presentationMode={presentationMode}
             />
             <KpiCard
               icon={<TrendingUp className="h-5 w-5 text-emerald-300" />}
               label="Months Saved"
               value={`${results.monthsSaved} months`}
               subValue="vs baseline plan"
+              presentationMode={presentationMode}
             />
             <KpiCard
               icon={<TrendingUp className="h-5 w-5 text-violet-300" />}
               label="Revenue Pulled Forward"
               value={formatMoney(results.revenuePulledForward)}
               subValue="Illustrative estimate"
+              presentationMode={presentationMode}
             />
             <KpiCard
               icon={<AlertTriangle className="h-5 w-5 text-amber-300" />}
               label="Development Risk Score"
               value={`${results.riskScore}/100`}
               subValue="Higher = more risk"
+              presentationMode={presentationMode}
             />
           </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-4 text-xl font-semibold">Timeline Optimization Inputs</h2>
+            <h2 className={`mb-4 font-semibold ${presentationMode ? "text-2xl" : "text-xl"}`}>
+              Timeline Optimization Inputs
+            </h2>
 
             <div className="mb-5">
-              <p className="mb-3 text-xs uppercase tracking-wide text-slate-400">
-                Scenario Presets
-              </p>
+              {!presentationMode ? (
+                <p className="mb-3 text-xs uppercase tracking-wide text-slate-400">
+                  Scenario Presets
+                </p>
+              ) : null}
               <div className="grid gap-3 sm:grid-cols-3">
                 {presetOrder.map((preset) => {
                   const isActive = activePreset === preset;
@@ -296,6 +332,7 @@ export default function Dashboard() {
                 max={24}
                 step={1}
                 onChange={(v) => update("enrollmentMonths", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Screen failure rate (%)"
@@ -304,6 +341,7 @@ export default function Dashboard() {
                 max={50}
                 step={1}
                 onChange={(v) => update("screenFailureRate", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Dropout rate (%)"
@@ -312,6 +350,7 @@ export default function Dashboard() {
                 max={25}
                 step={1}
                 onChange={(v) => update("dropoutRate", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Protocol amendments"
@@ -320,6 +359,7 @@ export default function Dashboard() {
                 max={6}
                 step={1}
                 onChange={(v) => update("protocolAmendments", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Database lock time (months)"
@@ -328,6 +368,7 @@ export default function Dashboard() {
                 max={8}
                 step={1}
                 onChange={(v) => update("dbLockMonths", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Submission prep (months)"
@@ -336,6 +377,7 @@ export default function Dashboard() {
                 max={8}
                 step={1}
                 onChange={(v) => update("submissionPrepMonths", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Regulatory review assumption (months)"
@@ -344,6 +386,7 @@ export default function Dashboard() {
                 max={14}
                 step={1}
                 onChange={(v) => update("reviewMonths", v)}
+                presentationMode={presentationMode}
               />
               <SliderRow
                 label="Monthly peak revenue assumption ($)"
@@ -353,13 +396,16 @@ export default function Dashboard() {
                 step={10000000}
                 onChange={(v) => update("monthlyPeakRevenue", v)}
                 formatValue={(v) => formatMoney(v)}
+                presentationMode={presentationMode}
               />
             </div>
           </section>
 
-          <section className="space-y-6">
+          <section className={presentationMode ? "space-y-4" : "space-y-6"}>
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="mb-4 text-xl font-semibold">Baseline vs Optimized Timeline</h2>
+              <h2 className={`mb-4 font-semibold ${presentationMode ? "text-2xl" : "text-xl"}`}>
+                Baseline vs Optimized Timeline
+              </h2>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={results.chartData}>
@@ -402,14 +448,18 @@ export default function Dashboard() {
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="mb-3 text-xl font-semibold">Executive Interpretation</h2>
-              <p className="text-sm leading-7 text-slate-300">
-                This simulation shows how operational and software-assisted improvements
-                across enrollment planning, protocol stability, data management, and
-                submission readiness can move a launch timeline left. In a real pharma
-                setting, tools built faster with Cursor could help teams model scenarios,
-                reduce manual coordination, and identify bottlenecks earlier.
-              </p>
+              <h2 className={`mb-3 font-semibold ${presentationMode ? "text-2xl" : "text-xl"}`}>
+                Executive Interpretation
+              </h2>
+              {!presentationMode ? (
+                <p className="text-sm leading-7 text-slate-300">
+                  This simulation shows how operational and software-assisted improvements
+                  across enrollment planning, protocol stability, data management, and
+                  submission readiness can move a launch timeline left. In a real pharma
+                  setting, tools built faster with Cursor could help teams model scenarios,
+                  reduce manual coordination, and identify bottlenecks earlier.
+                </p>
+              ) : null}
 
               <div className="mt-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 text-sm text-cyan-100">
                 <strong>Current scenario:</strong>{" "}
@@ -438,20 +488,28 @@ function KpiCard({
   label,
   value,
   subValue,
+  presentationMode = false,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   subValue: string;
+  presentationMode?: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
       <div className="mb-3 flex items-center gap-2">
         {icon}
-        <span className="text-sm text-slate-300">{label}</span>
+        <span className={presentationMode ? "text-base text-slate-200" : "text-sm text-slate-300"}>
+          {label}
+        </span>
       </div>
-      <div className="text-2xl font-semibold">{value}</div>
-      <div className="mt-1 text-xs text-slate-400">{subValue}</div>
+      <div className={presentationMode ? "text-3xl font-semibold" : "text-2xl font-semibold"}>
+        {value}
+      </div>
+      {!presentationMode ? (
+        <div className="mt-1 text-xs text-slate-400">{subValue}</div>
+      ) : null}
     </div>
   );
 }
@@ -464,6 +522,7 @@ function SliderRow({
   step,
   onChange,
   formatValue,
+  presentationMode = false,
 }: {
   label: string;
   value: number;
@@ -472,12 +531,13 @@ function SliderRow({
   step: number;
   onChange: (value: number) => void;
   formatValue?: (value: number) => string;
+  presentationMode?: boolean;
 }) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <label className="text-slate-200">{label}</label>
-        <span className="text-slate-400">
+      <div className={`mb-2 flex items-center justify-between ${presentationMode ? "text-base" : "text-sm"}`}>
+        <label className={presentationMode ? "text-slate-100" : "text-slate-200"}>{label}</label>
+        <span className={presentationMode ? "text-slate-300" : "text-slate-400"}>
           {formatValue ? formatValue(value) : value}
         </span>
       </div>
