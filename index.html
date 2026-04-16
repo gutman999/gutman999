@@ -412,6 +412,82 @@
       font-size: 0.9rem;
     }
 
+    .comp-wrap {
+      margin-top: 1rem;
+      border: 1px solid #2b4339;
+      border-radius: 14px;
+      overflow: auto;
+      background: var(--bg-card);
+    }
+
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    .comp-table th,
+    .comp-table td {
+      border-bottom: 1px solid #24362f;
+      padding: 0.82rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+      color: #d1e9e2;
+    }
+
+    .comp-table th {
+      background: #111816;
+      color: #c9f5e8;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .comp-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comp-table .feature-col {
+      width: 24%;
+      font-weight: 600;
+      color: #e3faf4;
+    }
+
+    .comp-table .cursor-col,
+    .comp-table th.cursor-col {
+      background: linear-gradient(160deg, rgba(38, 217, 182, 0.14), rgba(38, 217, 182, 0.05));
+      border-left: 1px solid #2e6656;
+      border-right: 1px solid #2e6656;
+    }
+
+    .comp-table td.cursor-col {
+      color: #e8fff9;
+    }
+
+    .comp-badge {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0.18rem 0.45rem;
+      border: 1px solid #33735f;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      color: #d8fff4;
+      background: rgba(38, 217, 182, 0.16);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      vertical-align: middle;
+    }
+
+    .comp-note {
+      margin-top: 0.8rem;
+      font-size: 0.82rem;
+      color: #9bb1aa;
+    }
+
     .questions {
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       margin-top: 1rem;
@@ -650,6 +726,56 @@
           <p class="tier-why"><strong>Why Cursor:</strong> Data-heavy, regulated operations require reliable code quality and observability; Cursor can improve developer throughput without compromising control.</p>
         </article>
       </div>
+    </section>
+
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>Competitive Landscape</h2>
+      <p class="subtext">Positioning for enterprise life sciences evaluations where security, governance, and measurable impact drive vendor selection.</p>
+      <div class="comp-wrap">
+        <table class="comp-table" aria-label="Cursor versus Copilot and Windsurf comparison for enterprise life sciences">
+          <thead>
+            <tr>
+              <th class="feature-col">Evaluation Criteria</th>
+              <th class="cursor-col">Cursor <span class="comp-badge">Preferred</span></th>
+              <th>GitHub Copilot</th>
+              <th>Windsurf / Codeium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-col">Privacy / compliance features</td>
+              <td class="cursor-col">Enterprise-grade controls plus policy-oriented workflows that support security review conversations in regulated environments.</td>
+              <td>Strong enterprise trust via GitHub ecosystem, often evaluated through broader Microsoft/GitHub governance stack.</td>
+              <td>Improving enterprise posture; requires deeper diligence with risk, legal, and compliance teams in conservative accounts.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Agentic capabilities</td>
+              <td class="cursor-col">AI-native, agent-forward experience designed for complex coding tasks, iterative refactors, and workflow acceleration.</td>
+              <td>Broad assistant adoption and coding support, typically perceived as less agent-centric in day-to-day workflows.</td>
+              <td>Agentic features evolving quickly and can be compelling in technical evaluations depending on team preferences.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Enterprise admin controls</td>
+              <td class="cursor-col">Built for enterprise deployment conversations with IT/security around admin governance, rollout control, and team standards.</td>
+              <td>Mature admin pathways for enterprises already standardized on GitHub Enterprise.</td>
+              <td>Admin tooling available but often needs additional validation for larger, highly controlled enterprise rollouts.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Model flexibility</td>
+              <td class="cursor-col">Flexible model strategy and workflow fit for teams balancing performance, cost, and policy requirements.</td>
+              <td>Tight integration within GitHub ecosystem with less perceived flexibility depending on customer architecture preferences.</td>
+              <td>Competitive model options and experimentation appeal, but enterprise buyers may request proof of long-term governance fit.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Adoption / ROI metrics</td>
+              <td class="cursor-col">Clear value story around faster development cycles, higher throughput, and repeatable enterprise productivity gains.</td>
+              <td>High market awareness and easy initial adoption, with ROI tied to existing platform usage patterns.</td>
+              <td>Can show fast pilot momentum; enterprise-scale ROI proof may require stronger multi-team evidence in larger accounts.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="comp-note">AE framing: lead with business impact and regulated-enterprise fit, then differentiate on agentic workflow quality and deployment confidence.</p>
     </section>
 
     <section class="section reveal">
