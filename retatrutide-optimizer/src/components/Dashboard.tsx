@@ -132,6 +132,20 @@ export default function Dashboard() {
             </div>
           </div>
 
+          <section className="mb-6 rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+            <h2 className="text-sm font-semibold tracking-wide text-slate-100">
+              Why Retatrutide?
+            </h2>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
+              <li>Investigational, Phase 3 obesity asset</li>
+              <li>Multiple obesity-related development programs underway</li>
+              <li>
+                Large commercial value makes even modest timeline acceleration
+                strategically meaningful
+              </li>
+            </ul>
+          </section>
+
           <div className="grid gap-4 md:grid-cols-4">
             <KpiCard
               icon={<CalendarDays className="h-5 w-5 text-cyan-300" />}
