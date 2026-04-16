@@ -100,6 +100,7 @@ export default function Dashboard() {
   const [inputs, setInputs] = useState<ModelInputs>(baseline);
   const [activePreset, setActivePreset] = useState<ScenarioPreset | null>(null);
   const [presentationMode, setPresentationMode] = useState(false);
+  const [showAboutModel, setShowAboutModel] = useState(false);
 
   const update = <K extends keyof ModelInputs>(key: K, value: ModelInputs[K]) => {
     setActivePreset(null);
@@ -470,6 +471,43 @@ export default function Dashboard() {
                 <span className="font-semibold">{results.baselineLaunch}</span> to{" "}
                 <span className="font-semibold">{results.optimizedLaunch}</span>.
               </div>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <button
+                type="button"
+                onClick={() => setShowAboutModel((prev) => !prev)}
+                className="flex w-full items-center justify-between text-left"
+                aria-expanded={showAboutModel}
+              >
+                <h2 className={`font-semibold ${presentationMode ? "text-2xl" : "text-xl"}`}>
+                  About the Model
+                </h2>
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {showAboutModel ? "Collapse" : "Expand"}
+                </span>
+              </button>
+
+              {showAboutModel ? (
+                <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-slate-300">
+                  <li>
+                    This dashboard is a strategic simulation designed for planning
+                    conversations.
+                  </li>
+                  <li>
+                    It does not predict actual FDA review timing or Eli Lilly launch
+                    timing.
+                  </li>
+                  <li>
+                    It models how operational bottlenecks can influence development
+                    readiness and timeline outcomes.
+                  </li>
+                  <li>
+                    It illustrates how tools built rapidly with Cursor could support
+                    pharma teams in scenario analysis and decision support.
+                  </li>
+                </ul>
+              ) : null}
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-xs leading-6 text-slate-400">
