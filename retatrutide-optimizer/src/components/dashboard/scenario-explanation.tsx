@@ -9,7 +9,7 @@ type ScenarioExplanationProps = {
 export function ScenarioExplanation({ result }: ScenarioExplanationProps) {
   const { kpis, optimizedTotalMonths, baselineTotalMonths, controls } = result;
   const accelerationPct = ((kpis.monthsSaved / baselineTotalMonths) * 100).toFixed(1);
-  const strongestLevers = [
+  const leverScores: [string, number][] = [
     ["Data cleaning automation", controls.dataCleaningAutomationPct],
     ["Enrollment acceleration", controls.enrollmentAccelerationPct],
     ["Protocol digitization", controls.protocolDigitizationPct],
@@ -17,7 +17,8 @@ export function ScenarioExplanation({ result }: ScenarioExplanationProps) {
     ["Site activation reduction", controls.siteActivationReductionPct],
     ["Launch prep acceleration", controls.launchPrepAccelerationPct],
     ["Quality risk mitigation", controls.qualityRiskMitigationPct],
-  ]
+  ];
+  const strongestLevers = leverScores
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([label]) => label);
