@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Retatrutide Time-to-Market Optimizer",
   description:
-    "Executive demo dashboard modeling strategic timeline acceleration scenarios for retatrutide.",
+    "Strategic pharma timeline simulation built for a Cursor interview demo.",
 };
 
 export default function RootLayout({
