@@ -30,11 +30,13 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <header>
-        <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Operations Overview</p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">Site Feasibility Dashboard</h2>
-        <p className="mt-2 max-w-3xl text-sm text-slate-600">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">Operations Overview</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+          Site Feasibility Dashboard
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
           Enterprise-style snapshot of network readiness, risk signals, and projected enrollment output.
         </p>
       </header>
@@ -43,24 +45,22 @@ export default function DashboardPage() {
         {dashboardStats.map((stat) => (
           <article
             key={stat.label}
-            className="rounded-2xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50 p-5 shadow-sm transition hover:shadow-md"
+            className="rounded-2xl border border-slate-200/90 bg-gradient-to-b from-white to-slate-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{stat.label}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{stat.label}</p>
             <p className="mt-2 text-3xl font-semibold text-slate-900">{stat.value}</p>
-            <p className="mt-1 text-xs text-slate-500">{stat.detail}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">{stat.detail}</p>
           </article>
         ))}
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.9fr,1fr]">
         <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="border-b border-slate-200 px-5 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">Top 5 Sites by Feasibility Score</h3>
-              <p className="text-sm text-slate-500">
+          <div className="border-b border-slate-200 px-5 py-4">
+            <h3 className="text-lg font-semibold text-slate-900">Top 5 Sites by Feasibility Score</h3>
+            <p className="mt-1 text-sm text-slate-500">
                 Ranked by startup speed, patient depth, enrollment history, retention, and trial experience.
-              </p>
-            </div>
+            </p>
           </div>
 
           <div className="overflow-x-auto">
@@ -127,7 +127,7 @@ export default function DashboardPage() {
             <h3 className="text-base font-semibold text-slate-900">Network Health</h3>
             <div className="mt-4 space-y-3">
               <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                <span className="text-sm text-slate-600">Active + Recruiting</span>
+                <span className="text-sm text-slate-600">Top-ranked sites shown</span>
                 <span className="text-sm font-semibold text-slate-900">{topSites.length}</span>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
