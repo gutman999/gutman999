@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { SiteStatusBadge } from "@/components/site-status-badge";
-import {
-  dashboardOverview,
-  trialSiteFeasibilityRankings,
-} from "@/lib/trial-sites";
+import { getFeasibilityLabelColorClass } from "@/lib/feasibility-score";
+import { dashboardOverview, trialSiteFeasibilityRankings } from "@/lib/trial-sites";
 
 export default function DashboardPage() {
   const topSites = trialSiteFeasibilityRankings.slice(0, 5);
@@ -20,7 +18,7 @@ export default function DashboardPage() {
       detail: "Weighted across operational inputs",
     },
     {
-      label: "At-Risk Sites",
+      label: "At Risk Sites",
       value: dashboardOverview.atRiskSites.toString(),
       detail: "High-risk tier based on feasibility",
     },
@@ -75,7 +73,7 @@ export default function DashboardPage() {
                   <th className="px-5 py-3">Therapeutic Area</th>
                   <th className="px-5 py-3 text-right">Feasibility</th>
                   <th className="px-5 py-3 text-right">Monthly Enrollment</th>
-                  <th className="px-5 py-3">Risk Tier</th>
+                  <th className="px-5 py-3">Potential Label</th>
                   <th className="px-5 py-3">Status</th>
                 </tr>
               </thead>
@@ -99,15 +97,11 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          entry.riskTier === "Low"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : entry.riskTier === "Moderate"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-rose-100 text-rose-700"
-                        }`}
+                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getFeasibilityLabelColorClass(
+                          entry.feasibilityLabel,
+                        )}`}
                       >
-                        {entry.riskTier}
+                        {entry.feasibilityLabel}
                       </span>
                     </td>
                     <td className="px-5 py-4">

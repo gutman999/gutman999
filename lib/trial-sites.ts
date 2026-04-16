@@ -3,9 +3,15 @@ import {
   clinicalTrialSites,
   type ClinicalTrialSite,
 } from "@/seed/clinical-trial-sites";
+import {
+  getFeasibilityLabel,
+  getFeasibilityScore,
+  getProjectedMonthlyEnrollment,
+  getScoringBounds,
+  type FeasibilityLabel,
+} from "@/lib/feasibility-score";
 
 export type SiteStatus = "Planning" | "Recruiting" | "Active" | "At Risk";
-export type RiskTier = "Low" | "Moderate" | "High";
 
 export type TrialSite = ClinicalTrialSite & {
   name: string;
@@ -22,7 +28,7 @@ export type SiteFeasibility = {
   site: TrialSite;
   feasibilityScore: number;
   projectedMonthlyEnrollment: number;
-  riskTier: RiskTier;
+  feasibilityLabel: FeasibilityLabel;
 };
 
 const cohortMap: Record<string, string[]> = {
@@ -37,13 +43,6 @@ const cohortMap: Record<string, string[]> = {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
-}
-
-function normalize(value: number, min: number, max: number) {
-  if (max === min) {
-    return 1;
-  }
-  return clamp((value - min) / (max - min), 0, 1);
 }
 
 function getEnrollmentTarget(site: ClinicalTrialSite) {
@@ -92,90 +91,15 @@ export const trialSites: TrialSite[] = clinicalTrialSites.map((site, index) => {
   };
 });
 
-const metricBounds = trialSites.reduce(
-  (acc, site) => {
-    acc.startupDays.min = Math.min(acc.startupDays.min, site.startupDays);
-    acc.startupDays.max = Math.max(acc.startupDays.max, site.startupDays);
-    acc.eligiblePatientCount.min = Math.min(acc.eligiblePatientCount.min, site.eligiblePatientCount);
-    acc.eligiblePatientCount.max = Math.max(acc.eligiblePatientCount.max, site.eligiblePatientCount);
-    acc.historicalEnrollmentRate.min = Math.min(
-      acc.historicalEnrollmentRate.min,
-      site.historicalEnrollmentRate,
-    );
-    acc.historicalEnrollmentRate.max = Math.max(
-      acc.historicalEnrollmentRate.max,
-      site.historicalEnrollmentRate,
-    );
-    acc.retentionRate.min = Math.min(acc.retentionRate.min, site.retentionRate);
-    acc.retentionRate.max = Math.max(acc.retentionRate.max, site.retentionRate);
-    acc.previousTrialCount.min = Math.min(acc.previousTrialCount.min, site.previousTrialCount);
-    acc.previousTrialCount.max = Math.max(acc.previousTrialCount.max, site.previousTrialCount);
-    return acc;
-  },
-  {
-    startupDays: { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY },
-    eligiblePatientCount: { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY },
-    historicalEnrollmentRate: { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY },
-    retentionRate: { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY },
-    previousTrialCount: { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY },
-  },
-);
-
-function getFeasibilityScore(site: TrialSite) {
-  const startupScore = 1 - normalize(site.startupDays, metricBounds.startupDays.min, metricBounds.startupDays.max);
-  const eligibleScore = normalize(
-    site.eligiblePatientCount,
-    metricBounds.eligiblePatientCount.min,
-    metricBounds.eligiblePatientCount.max,
-  );
-  const enrollmentScore = normalize(
-    site.historicalEnrollmentRate,
-    metricBounds.historicalEnrollmentRate.min,
-    metricBounds.historicalEnrollmentRate.max,
-  );
-  const retentionScore = normalize(
-    site.retentionRate,
-    metricBounds.retentionRate.min,
-    metricBounds.retentionRate.max,
-  );
-  const trialExperienceScore = normalize(
-    site.previousTrialCount,
-    metricBounds.previousTrialCount.min,
-    metricBounds.previousTrialCount.max,
-  );
-
-  const weightedScore =
-    startupScore * 0.2 +
-    eligibleScore * 0.2 +
-    enrollmentScore * 0.3 +
-    retentionScore * 0.2 +
-    trialExperienceScore * 0.1;
-
-  return Math.round(weightedScore * 100);
-}
-
-function getRiskTier(feasibilityScore: number): RiskTier {
-  if (feasibilityScore < 60) {
-    return "High";
-  }
-  if (feasibilityScore < 80) {
-    return "Moderate";
-  }
-  return "Low";
-}
-
-function getProjectedMonthlyEnrollment(site: TrialSite) {
-  const retentionAdjustedEnrollment = site.historicalEnrollmentRate * (site.retentionRate / 100);
-  return Number(retentionAdjustedEnrollment.toFixed(1));
-}
+const scoringBounds = getScoringBounds(trialSites);
 
 export const trialSiteFeasibility: SiteFeasibility[] = trialSites.map((site) => {
-  const feasibilityScore = getFeasibilityScore(site);
+  const feasibilityScore = getFeasibilityScore(site, scoringBounds);
   return {
     site,
     feasibilityScore,
-    projectedMonthlyEnrollment: getProjectedMonthlyEnrollment(site),
-    riskTier: getRiskTier(feasibilityScore),
+    projectedMonthlyEnrollment: getProjectedMonthlyEnrollment(site.historicalEnrollmentRate, site.retentionRate),
+    feasibilityLabel: getFeasibilityLabel(feasibilityScore),
   };
 });
 
@@ -190,7 +114,7 @@ const averageFeasibilityScoreValue =
 export const dashboardOverview = {
   totalSites: trialSites.length,
   averageFeasibilityScore: Number(averageFeasibilityScoreValue.toFixed(1)),
-  atRiskSites: trialSiteFeasibility.filter((entry) => entry.riskTier === "High").length,
+  atRiskSites: trialSiteFeasibility.filter((entry) => entry.feasibilityLabel === "At risk").length,
   projectedMonthlyEnrollment: Number(
     trialSiteFeasibility
       .reduce((total, entry) => total + entry.projectedMonthlyEnrollment, 0)
@@ -229,5 +153,6 @@ export function getSiteById(siteId: string) {
   return trialSites.find((site) => site.id === siteId);
 }
 
+export { getFeasibilityLabel, getFeasibilityScore, getProjectedMonthlyEnrollment, getScoringBounds };
 export { clinicalTrialSites, clinicalTrialSiteTherapeuticAreas };
 export type { ClinicalTrialSite };
