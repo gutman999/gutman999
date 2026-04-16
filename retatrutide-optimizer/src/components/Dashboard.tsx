@@ -1,223 +1,343 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Beaker, CalendarDays, TrendingUp, AlertTriangle } from "lucide-react";
 import {
-  ArrowRight,
-  CalendarClock,
-  CircleDollarSign,
-  ShieldAlert,
-  Timer,
-} from "lucide-react";
-import { ControlSlider } from "@/components/dashboard/control-slider";
-import { KpiCard } from "@/components/dashboard/kpi-card";
-import { ScenarioExplanation } from "@/components/dashboard/scenario-explanation";
-import { SectionCard } from "@/components/dashboard/section-card";
-import { TimelineChart } from "@/components/dashboard/timeline-chart";
-import {
-  defaultAssumptions,
-  defaultControls,
-  formatMonths,
-  formatUsdBillions,
-  runSimulation,
-} from "@/lib/simulation";
-import { OptimizationControls } from "@/types/simulation";
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts";
 
-const controlsConfig: {
-  key: keyof OptimizationControls;
-  label: string;
-  description: string;
-}[] = [
-  {
-    key: "protocolDigitizationPct",
-    label: "Protocol Digitization",
-    description: "Improve design speed and amendment cycle efficiency.",
-  },
-  {
-    key: "siteActivationReductionPct",
-    label: "Site Activation Compression",
-    description: "Reduce startup lag for trial site onboarding.",
-  },
-  {
-    key: "enrollmentAccelerationPct",
-    label: "Enrollment Acceleration",
-    description: "Increase recruitment throughput with patient analytics.",
-  },
-  {
-    key: "dataCleaningAutomationPct",
-    label: "Data Cleaning Automation",
-    description: "Automate reconciliation and lock-cycle bottlenecks.",
-  },
-  {
-    key: "regulatoryParallelizationPct",
-    label: "Regulatory Parallelization",
-    description: "Enable rolling submission and cross-functional review prep.",
-  },
-  {
-    key: "launchPrepAccelerationPct",
-    label: "Launch Readiness Acceleration",
-    description: "Pull manufacturing, market access, and medical affairs forward.",
-  },
-  {
-    key: "qualityRiskMitigationPct",
-    label: "Quality Risk Mitigation",
-    description: "Lower execution risk through QA automation and visibility.",
-  },
-];
+type ModelInputs = {
+  enrollmentMonths: number;
+  screenFailureRate: number;
+  dropoutRate: number;
+  protocolAmendments: number;
+  dbLockMonths: number;
+  submissionPrepMonths: number;
+  reviewMonths: number;
+  monthlyPeakRevenue: number;
+};
+
+const baseline: ModelInputs = {
+  enrollmentMonths: 18,
+  screenFailureRate: 30,
+  dropoutRate: 12,
+  protocolAmendments: 2,
+  dbLockMonths: 4,
+  submissionPrepMonths: 5,
+  reviewMonths: 10,
+  monthlyPeakRevenue: 450000000,
+};
+
+function formatMoney(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function addMonthsToDate(start: Date, months: number) {
+  const d = new Date(start);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
+function formatMonthYear(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+  });
+}
 
 export default function Dashboard() {
-  const [controls, setControls] =
-    useState<OptimizationControls>(defaultControls);
-  const simulation = useMemo(
-    () => runSimulation(defaultAssumptions, controls),
-    [controls],
-  );
+  const [inputs, setInputs] = useState<ModelInputs>(baseline);
 
-  const onControlChange = (key: keyof OptimizationControls, value: number) => {
-    setControls((previous) => ({ ...previous, [key]: value }));
+  const update = <K extends keyof ModelInputs>(key: K, value: ModelInputs[K]) => {
+    setInputs((prev) => ({ ...prev, [key]: value }));
   };
 
+  const results = useMemo(() => {
+    const baselineTotal =
+      baseline.enrollmentMonths +
+      baseline.dbLockMonths +
+      baseline.submissionPrepMonths +
+      baseline.reviewMonths +
+      baseline.protocolAmendments * 1.5 +
+      (baseline.screenFailureRate / 100) * 4 +
+      (baseline.dropoutRate / 100) * 3;
+
+    const optimizedTotal =
+      inputs.enrollmentMonths +
+      inputs.dbLockMonths +
+      inputs.submissionPrepMonths +
+      inputs.reviewMonths +
+      inputs.protocolAmendments * 1.5 +
+      (inputs.screenFailureRate / 100) * 4 +
+      (inputs.dropoutRate / 100) * 3;
+
+    const monthsSaved = Math.max(0, baselineTotal - optimizedTotal);
+
+    const today = new Date("2026-04-16");
+    const baselineLaunch = addMonthsToDate(today, Math.round(baselineTotal));
+    const optimizedLaunch = addMonthsToDate(today, Math.round(optimizedTotal));
+
+    const revenuePulledForward = monthsSaved * inputs.monthlyPeakRevenue;
+
+    const riskScoreRaw =
+      inputs.screenFailureRate * 0.25 +
+      inputs.dropoutRate * 0.2 +
+      inputs.protocolAmendments * 12 +
+      inputs.dbLockMonths * 6 +
+      inputs.submissionPrepMonths * 5;
+
+    const riskScore = Math.min(100, Math.round(riskScoreRaw));
+
+    return {
+      baselineTotal: Number(baselineTotal.toFixed(1)),
+      optimizedTotal: Number(optimizedTotal.toFixed(1)),
+      monthsSaved: Number(monthsSaved.toFixed(1)),
+      baselineLaunch: formatMonthYear(baselineLaunch),
+      optimizedLaunch: formatMonthYear(optimizedLaunch),
+      revenuePulledForward,
+      riskScore,
+      chartData: [
+        { name: "Baseline", months: Number(baselineTotal.toFixed(1)) },
+        { name: "Optimized", months: Number(optimizedTotal.toFixed(1)) },
+      ],
+    };
+  }, [inputs]);
+
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 py-8 lg:px-10 lg:py-10">
-      <header className="mb-8 rounded-3xl border border-indigo-200/70 bg-white p-8 shadow-sm ring-1 ring-slate-100">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-700">
-          Executive Simulation Dashboard
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 lg:text-4xl">
-          Retatrutide Time-to-Market Optimizer
-        </h1>
-        <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-700 lg:text-base">
-          Strategic scenario model illustrating how software and operational
-          improvements can compress development-to-launch timelines for Eli
-          Lilly&apos;s investigational obesity candidate retatrutide. Outputs
-          reflect directional business planning assumptions only.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center gap-3 text-xs">
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-medium text-slate-700">
-            Browser-based simulation
-          </span>
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-medium text-slate-700">
-            No external data sources
-          </span>
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-medium text-slate-700">
-            Demo environment
-          </span>
-        </div>
-      </header>
-
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_1fr]">
-        <div className="space-y-6">
-          <SectionCard
-            title="Baseline Timeline Assumptions"
-            subtitle="Reference development plan used as comparator"
-          >
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                ["Program Start", `${defaultAssumptions.programStartYear}`],
-                ["Discovery & Design", formatMonths(defaultAssumptions.discoveryMonths)],
-                ["Phase I", formatMonths(defaultAssumptions.phase1Months)],
-                ["Phase II", formatMonths(defaultAssumptions.phase2Months)],
-                ["Phase III", formatMonths(defaultAssumptions.phase3Months)],
-                ["Regulatory Review", formatMonths(defaultAssumptions.regulatoryMonths)],
-                [
-                  "Launch Readiness",
-                  formatMonths(defaultAssumptions.launchReadinessMonths),
-                ],
-                [
-                  "Peak Annual Revenue Assumption",
-                  formatUsdBillions(defaultAssumptions.peakAnnualRevenueBillion),
-                ],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3"
-                >
-                  <p className="text-xs uppercase tracking-wide text-slate-500">
-                    {label}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">
-                    {value}
-                  </p>
-                </div>
-              ))}
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="mb-8 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="rounded-2xl bg-cyan-400/15 p-3">
+              <Beaker className="h-6 w-6 text-cyan-300" />
             </div>
-          </SectionCard>
-
-          <SectionCard
-            title="Optimization Controls"
-            subtitle="Tune intervention intensity by capability area"
-          >
-            <div className="grid gap-4">
-              {controlsConfig.map((control) => (
-                <ControlSlider
-                  key={control.key}
-                  label={control.label}
-                  description={control.description}
-                  value={controls[control.key]}
-                  onChange={(value) => onControlChange(control.key, value)}
-                />
-              ))}
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Retatrutide Time-to-Market Optimizer
+              </h1>
+              <p className="mt-1 text-sm text-slate-300">
+                Strategic simulation for how digital workflow improvements could
+                compress launch readiness for an investigational obesity therapy.
+              </p>
             </div>
-          </SectionCard>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            <KpiCard
+              icon={<CalendarDays className="h-5 w-5 text-cyan-300" />}
+              label="Projected Launch"
+              value={results.optimizedLaunch}
+              subValue={`Baseline: ${results.baselineLaunch}`}
+            />
+            <KpiCard
+              icon={<TrendingUp className="h-5 w-5 text-emerald-300" />}
+              label="Months Saved"
+              value={`${results.monthsSaved} months`}
+              subValue="vs baseline plan"
+            />
+            <KpiCard
+              icon={<TrendingUp className="h-5 w-5 text-violet-300" />}
+              label="Revenue Pulled Forward"
+              value={formatMoney(results.revenuePulledForward)}
+              subValue="Illustrative estimate"
+            />
+            <KpiCard
+              icon={<AlertTriangle className="h-5 w-5 text-amber-300" />}
+              label="Development Risk Score"
+              value={`${results.riskScore}/100`}
+              subValue="Higher = more risk"
+            />
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <SectionCard
-            title="Projected Impact Summary"
-            subtitle="Comparative outcomes under current optimization settings"
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <KpiCard
-                title="Projected Launch Date"
-                value={simulation.kpis.projectedLaunchDateLabel}
-                helpText={`Program duration: ${formatMonths(simulation.optimizedTotalMonths)}`}
-                icon={CalendarClock}
-                tone="indigo"
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <h2 className="mb-4 text-xl font-semibold">Timeline Optimization Inputs</h2>
+
+            <div className="grid gap-5">
+              <SliderRow
+                label="Enrollment timeline (months)"
+                value={inputs.enrollmentMonths}
+                min={6}
+                max={24}
+                step={1}
+                onChange={(v) => update("enrollmentMonths", v)}
               />
-              <KpiCard
-                title="Months Saved"
-                value={`${simulation.kpis.monthsSaved.toFixed(0)} months`}
-                helpText={`Baseline ${simulation.baselineTotalMonths}m → Optimized ${simulation.optimizedTotalMonths}m`}
-                icon={Timer}
-                tone="emerald"
+              <SliderRow
+                label="Screen failure rate (%)"
+                value={inputs.screenFailureRate}
+                min={5}
+                max={50}
+                step={1}
+                onChange={(v) => update("screenFailureRate", v)}
               />
-              <KpiCard
-                title="Revenue Pulled Forward"
-                value={formatUsdBillions(simulation.kpis.revenuePulledForwardBillion)}
-                helpText="Directional estimate based on launch timing shift"
-                icon={CircleDollarSign}
-                tone="amber"
+              <SliderRow
+                label="Dropout rate (%)"
+                value={inputs.dropoutRate}
+                min={2}
+                max={25}
+                step={1}
+                onChange={(v) => update("dropoutRate", v)}
               />
-              <KpiCard
-                title="Development Risk Score"
-                value={`${simulation.kpis.developmentRiskScore}/100`}
-                helpText="Lower score indicates lower modeled execution risk"
-                icon={ShieldAlert}
-                tone="rose"
+              <SliderRow
+                label="Protocol amendments"
+                value={inputs.protocolAmendments}
+                min={0}
+                max={6}
+                step={1}
+                onChange={(v) => update("protocolAmendments", v)}
+              />
+              <SliderRow
+                label="Database lock time (months)"
+                value={inputs.dbLockMonths}
+                min={1}
+                max={8}
+                step={1}
+                onChange={(v) => update("dbLockMonths", v)}
+              />
+              <SliderRow
+                label="Submission prep (months)"
+                value={inputs.submissionPrepMonths}
+                min={1}
+                max={8}
+                step={1}
+                onChange={(v) => update("submissionPrepMonths", v)}
+              />
+              <SliderRow
+                label="Regulatory review assumption (months)"
+                value={inputs.reviewMonths}
+                min={6}
+                max={14}
+                step={1}
+                onChange={(v) => update("reviewMonths", v)}
+              />
+              <SliderRow
+                label="Monthly peak revenue assumption ($)"
+                value={inputs.monthlyPeakRevenue}
+                min={100000000}
+                max={800000000}
+                step={10000000}
+                onChange={(v) => update("monthlyPeakRevenue", v)}
+                formatValue={(v) => formatMoney(v)}
               />
             </div>
-          </SectionCard>
+          </section>
 
-          <SectionCard
-            title="Timeline Comparison"
-            subtitle="Baseline versus optimized phase durations"
-          >
-            <TimelineChart phases={simulation.phases} />
-            <div className="mt-4 flex items-center gap-2 text-xs text-slate-600">
-              <span>{simulation.baselineTotalMonths}m baseline</span>
-              <ArrowRight className="h-3.5 w-3.5 text-slate-500" />
-              <span>{simulation.optimizedTotalMonths}m optimized</span>
+          <section className="space-y-6">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-4 text-xl font-semibold">Baseline vs Optimized Timeline</h2>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={results.chartData}>
+                    <XAxis dataKey="name" stroke="#94a3b8" />
+                    <YAxis stroke="#94a3b8" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="months" name="Total Months to Launch" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </SectionCard>
 
-          <ScenarioExplanation result={simulation} />
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-xl font-semibold">Executive Interpretation</h2>
+              <p className="text-sm leading-7 text-slate-300">
+                This simulation shows how operational and software-assisted improvements
+                across enrollment planning, protocol stability, data management, and
+                submission readiness can move a launch timeline left. In a real pharma
+                setting, tools built faster with Cursor could help teams model scenarios,
+                reduce manual coordination, and identify bottlenecks earlier.
+              </p>
+
+              <div className="mt-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 text-sm text-cyan-100">
+                <strong>Current scenario:</strong>{" "}
+                By reducing enrollment drag, limiting amendments, and shortening
+                database lock plus submission prep, the program saves{" "}
+                <span className="font-semibold">{results.monthsSaved} months</span> and
+                shifts the modeled launch from{" "}
+                <span className="font-semibold">{results.baselineLaunch}</span> to{" "}
+                <span className="font-semibold">{results.optimizedLaunch}</span>.
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-xs leading-6 text-slate-400">
+              Retatrutide is investigational and not approved. This application is a
+              strategic commercialization and operations simulation for demo purposes only.
+            </div>
+          </section>
         </div>
-      </section>
-
-      <footer className="mt-8 rounded-2xl border border-slate-200 bg-white/80 px-6 py-4 text-xs leading-6 text-slate-600">
-        Strategic simulation only. This dashboard is a demonstration artifact
-        for business scenario planning and does not represent medical guidance,
-        clinical-trial probability, or regulatory outcome prediction.
-      </footer>
+      </div>
     </main>
+  );
+}
+
+function KpiCard({
+  icon,
+  label,
+  value,
+  subValue,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  subValue: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
+      <div className="mb-3 flex items-center gap-2">
+        {icon}
+        <span className="text-sm text-slate-300">{label}</span>
+      </div>
+      <div className="text-2xl font-semibold">{value}</div>
+      <div className="mt-1 text-xs text-slate-400">{subValue}</div>
+    </div>
+  );
+}
+
+function SliderRow({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  formatValue,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (value: number) => void;
+  formatValue?: (value: number) => string;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between text-sm">
+        <label className="text-slate-200">{label}</label>
+        <span className="text-slate-400">
+          {formatValue ? formatValue(value) : value}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-cyan-400"
+      />
+    </div>
   );
 }
