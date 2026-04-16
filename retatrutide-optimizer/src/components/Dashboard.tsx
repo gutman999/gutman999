@@ -23,6 +23,8 @@ type ModelInputs = {
   monthlyPeakRevenue: number;
 };
 
+type ScenarioPreset = "Conservative" | "Cursor-Assisted" | "Best Case";
+
 const baseline: ModelInputs = {
   enrollmentMonths: 18,
   screenFailureRate: 30,
@@ -33,6 +35,41 @@ const baseline: ModelInputs = {
   reviewMonths: 10,
   monthlyPeakRevenue: 450000000,
 };
+
+const presetConfig: Record<ScenarioPreset, ModelInputs> = {
+  Conservative: {
+    ...baseline,
+    enrollmentMonths: 17,
+    screenFailureRate: 29,
+    dropoutRate: 11,
+  },
+  "Cursor-Assisted": {
+    ...baseline,
+    enrollmentMonths: 15,
+    screenFailureRate: 25,
+    dropoutRate: 10,
+    protocolAmendments: 1,
+    dbLockMonths: 3,
+    submissionPrepMonths: 4,
+    reviewMonths: 9,
+  },
+  "Best Case": {
+    ...baseline,
+    enrollmentMonths: 12,
+    screenFailureRate: 20,
+    dropoutRate: 8,
+    protocolAmendments: 1,
+    dbLockMonths: 2,
+    submissionPrepMonths: 3,
+    reviewMonths: 8,
+  },
+};
+
+const presetOrder: ScenarioPreset[] = [
+  "Conservative",
+  "Cursor-Assisted",
+  "Best Case",
+];
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -57,9 +94,16 @@ function formatMonthYear(date: Date) {
 
 export default function Dashboard() {
   const [inputs, setInputs] = useState<ModelInputs>(baseline);
+  const [activePreset, setActivePreset] = useState<ScenarioPreset | null>(null);
 
   const update = <K extends keyof ModelInputs>(key: K, value: ModelInputs[K]) => {
+    setActivePreset(null);
     setInputs((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const applyPreset = (preset: ScenarioPreset) => {
+    setInputs({ ...presetConfig[preset] });
+    setActivePreset(preset);
   };
 
   const results = useMemo(() => {
@@ -177,6 +221,31 @@ export default function Dashboard() {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
             <h2 className="mb-4 text-xl font-semibold">Timeline Optimization Inputs</h2>
+
+            <div className="mb-5">
+              <p className="mb-3 text-xs uppercase tracking-wide text-slate-400">
+                Scenario Presets
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {presetOrder.map((preset) => {
+                  const isActive = activePreset === preset;
+                  return (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => applyPreset(preset)}
+                      className={`rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+                        isActive
+                          ? "border-cyan-300 bg-cyan-300/20 text-cyan-100"
+                          : "border-white/15 bg-slate-900/70 text-slate-200 hover:border-cyan-300/60 hover:text-white"
+                      }`}
+                    >
+                      {preset}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <div className="grid gap-5">
               <SliderRow
