@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Account Executive – Life Sciences Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elev: #121416;
+      --bg-card: #14181b;
+      --text: #eaf7f3;
+      --muted: #9db2aa;
+      --accent: #26d9b6;
+      --accent-strong: #1ff1be;
+      --line: #213028;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1400px 700px at 5% -10%, rgba(38, 217, 182, 0.2), transparent 65%),
+                  radial-gradient(1200px 600px at 105% 20%, rgba(31, 241, 190, 0.12), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1140px, 92vw);
+      margin: 0 auto;
+    }
+
+    .section {
+      margin: 1.1rem 0 2.4rem;
+      padding: 2rem;
+      border: 1px solid var(--line);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0)), var(--bg-elev);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+      font-size: clamp(1.2rem, 2vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .accent-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(38, 217, 182, 0.8);
+    }
+
+    .hero {
+      padding: 4.5rem 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(170deg, rgba(38, 217, 182, 0.12), rgba(20, 24, 27, 0.92) 40%);
+      box-shadow: var(--shadow);
+      padding: clamp(1.4rem, 3vw, 2.6rem);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      border: 1px solid #2a4a3f;
+      color: #b2efe0;
+      background: rgba(38, 217, 182, 0.09);
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 3.1rem);
+      line-height: 1.16;
+      margin-bottom: 0.45rem;
+      font-weight: 800;
+    }
+
+    .hero-role {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: #cbf7ed;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .hero-positioning {
+      max-width: 800px;
+      color: var(--muted);
+      font-size: clamp(0.96rem, 1.8vw, 1.08rem);
+    }
+
+    .meta-grid,
+    .vp-grid,
+    .tier-grid,
+    .questions {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .meta-grid {
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      margin: 1rem 0 1.3rem;
+    }
+
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid #25352d;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      transition: transform 250ms ease, border-color 250ms ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: #2f6757;
+    }
+
+    .stat-value {
+      color: var(--accent-strong);
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.87rem;
+      color: var(--muted);
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 0.96rem;
+      max-width: 920px;
+    }
+
+    .vp-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 1rem;
+    }
+
+    .vp-card {
+      background: var(--bg-card);
+      border: 1px solid #273a31;
+      border-radius: 14px;
+      padding: 1.05rem;
+      transition: border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+    }
+
+    .vp-card:hover {
+      border-color: #349b81;
+      transform: translateY(-5px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+    }
+
+    .vp-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .pill {
+      font-size: 0.73rem;
+      color: #b3efe0;
+      border: 1px solid #2f5f51;
+      border-radius: 999px;
+      padding: 0.2rem 0.5rem;
+      margin-left: 0.45rem;
+      vertical-align: middle;
+    }
+
+    .vp-card ul {
+      padding-left: 1.1rem;
+      color: var(--muted);
+      display: grid;
+      gap: 0.42rem;
+      font-size: 0.93rem;
+    }
+
+    .plan-shell {
+      margin-top: 1rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      border: 1px solid #2a4238;
+      background: #101515;
+      color: #c3e7dd;
+      border-radius: 11px;
+      padding: 0.58rem 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 220ms ease;
+    }
+
+    .tab-btn:hover {
+      border-color: #3c7b68;
+      color: #d5fff4;
+    }
+
+    .tab-btn.active {
+      background: rgba(38, 217, 182, 0.16);
+      border-color: #3ea68a;
+      color: #dffcf6;
+    }
+
+    .phase-panel {
+      display: none;
+      border: 1px solid #2b3f37;
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 1.2rem;
+      animation: phaseIn 300ms ease;
+    }
+
+    .phase-panel.active {
+      display: block;
+    }
+
+    @keyframes phaseIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .phase-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .phase-goal,
+    .phase-metric {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .phase-goal strong,
+    .phase-metric strong {
+      color: #d7fdf4;
+    }
+
+    .progress-row {
+      margin: 0.75rem 0 0.95rem;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+      color: #bae9dd;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #1c2522;
+      border: 1px solid #2e4039;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #27d8b6, #1ff1be);
+      transition: width 300ms ease;
+    }
+
+    .checklist {
+      list-style: none;
+      display: grid;
+      gap: 0.68rem;
+      margin-top: 0.8rem;
+    }
+
+    .check-item label {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #d4e7e1;
+      transition: color 250ms ease;
+    }
+
+    .check-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      margin-top: 0.18rem;
+      flex: 0 0 auto;
+    }
+
+    .check-item input[type="checkbox"]:checked + span {
+      text-decoration: line-through;
+      color: #86a69d;
+    }
+
+    .plan-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.85rem;
+    }
+
+    .ghost-btn {
+      background: transparent;
+      border: 1px solid #355247;
+      color: #b9e5da;
+      border-radius: 9px;
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+      transition: all 200ms ease;
+      font-size: 0.83rem;
+    }
+
+    .ghost-btn:hover {
+      border-color: #4e856f;
+      color: #ddfff7;
+    }
+
+    .tier-grid {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      margin-top: 1rem;
+    }
+
+    .tier-card {
+      border: 1px solid #2a4239;
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 1rem;
+      transition: transform 230ms ease, border-color 230ms ease;
+    }
+
+    .tier-card:hover {
+      transform: translateY(-4px);
+      border-color: #3d7f6a;
+    }
+
+    .tier-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c0f5e8;
+      border: 1px solid #355447;
+      background: rgba(38, 217, 182, 0.1);
+      border-radius: 999px;
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tier-card h3 {
+      margin-bottom: 0.45rem;
+      font-size: 1rem;
+    }
+
+    .tier-accounts {
+      color: #d4ebe4;
+      font-size: 0.9rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .tier-why {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .questions {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 1rem;
+      counter-reset: q;
+    }
+
+    .question {
+      border: 1px solid #2b4138;
+      border-radius: 14px;
+      background: var(--bg-card);
+      padding: 1rem;
+      color: #d6ece5;
+      transition: transform 230ms ease, border-color 230ms ease;
+      position: relative;
+      min-height: 130px;
+    }
+
+    .question::before {
+      counter-increment: q;
+      content: "Q" counter(q);
+      position: absolute;
+      top: 0.65rem;
+      right: 0.75rem;
+      font-size: 0.75rem;
+      color: #9ad7c8;
+      border: 1px solid #315447;
+      border-radius: 999px;
+      padding: 0.2rem 0.45rem;
+    }
+
+    .question:hover {
+      transform: translateY(-4px);
+      border-color: #3a7b67;
+    }
+
+    footer {
+      text-align: center;
+      color: #7f9890;
+      font-size: 0.82rem;
+      padding: 0.8rem 0 2rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 700px) {
+      .section {
+        padding: 1.2rem;
+      }
+
+      .hero {
+        padding-top: 2.8rem;
+      }
+
+      .tabs {
+        gap: 0.5rem;
+      }
+
+      .tab-btn {
+        padding: 0.52rem 0.72rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero container reveal">
+    <div class="hero-card">
+      <span class="tag">Interview Business Plan</span>
+      <h1>Your Name</h1>
+      <p class="hero-role">Enterprise Account Executive – Life Sciences</p>
+      <p class="hero-positioning">
+        I combine proven enterprise sales execution across data, security, and AI platforms to help Cursor win strategic life sciences accounts and scale durable pipeline quickly.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>Cursor at a Glance</h2>
+      <div class="meta-grid">
+        <article class="stat">
+          <p class="stat-value">$1B+ ARR</p>
+          <p class="stat-label">Reached elite software scale at historic speed</p>
+        </article>
+        <article class="stat">
+          <p class="stat-value">$29.3B</p>
+          <p class="stat-label">Valuation signaling market conviction and momentum</p>
+        </article>
+        <article class="stat">
+          <p class="stat-value">Fastest B2B</p>
+          <p class="stat-label">To cross $1B ARR among modern software peers</p>
+        </article>
+        <article class="stat">
+          <p class="stat-value">Fortune 500</p>
+          <p class="stat-label">Strong enterprise adoption and production-grade trust</p>
+        </article>
+      </div>
+      <p class="subtext">
+        Cursor is an AI-native coding environment that increases developer velocity, code quality, and team throughput. Life sciences is a prime vertical because software now powers research informatics, regulated pipelines, connected devices, and clinical operations—making productivity, governance, and secure AI workflows mission-critical.
+      </p>
+    </section>
+
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>My Value Proposition</h2>
+      <p class="subtext">How prior wins map directly to Cursor’s life sciences enterprise motion:</p>
+      <div class="vp-grid">
+        <article class="vp-card">
+          <h3>Qlik <span class="pill">Data Analytics</span></h3>
+          <ul>
+            <li>Led value-based analytics conversations with enterprise stakeholders.</li>
+            <li>Built multi-threaded deals spanning IT, business, and procurement.</li>
+            <li>Translates to: storytelling around developer productivity ROI and measurable outcomes.</li>
+          </ul>
+        </article>
+        <article class="vp-card">
+          <h3>Splunk <span class="pill">Security & Observability</span></h3>
+          <ul>
+            <li>Sold into technical buyers with high governance and risk sensitivity.</li>
+            <li>Navigated complex sales cycles in security-conscious organizations.</li>
+            <li>Translates to: credibility with regulated life sciences security/compliance teams.</li>
+          </ul>
+        </article>
+        <article class="vp-card">
+          <h3>Evolv <span class="pill">AI/ML Optimization</span></h3>
+          <ul>
+            <li>Positioned AI adoption as a business lever, not just a tooling upgrade.</li>
+            <li>Helped teams operationalize experimentation and continuous improvement.</li>
+            <li>Translates to: landing AI coding workflows and driving expansion from initial use cases.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>Interactive 30-60-90 Day Plan</h2>
+      <p class="subtext">A practical execution roadmap from ramp to early wins. Track completion live; progress is saved in your browser.</p>
+      <div class="plan-shell">
+        <div class="tabs" role="tablist" aria-label="30-60-90 day phases">
+          <button class="tab-btn active" data-target="phase-1" role="tab" aria-selected="true">Days 1–30 · Learn</button>
+          <button class="tab-btn" data-target="phase-2" role="tab" aria-selected="false">Days 31–60 · Build</button>
+          <button class="tab-btn" data-target="phase-3" role="tab" aria-selected="false">Days 61–90 · Execute</button>
+        </div>
+
+        <article class="phase-panel active" id="phase-1" role="tabpanel">
+          <div class="phase-meta">
+            <p class="phase-goal"><strong>Phase Goal:</strong> Build deep product fluency, internal alignment, and a focused life sciences account map.</p>
+            <p class="phase-metric"><strong>Success Indicator:</strong> Product certified, competitive narrative ready, and 20-account target list complete.</p>
+          </div>
+          <div class="progress-row">
+            <div class="progress-top"><span>Progress</span><span id="phase-1-count">0/7 complete (0%)</span></div>
+            <div class="progress-track"><div class="progress-fill" id="phase-1-progress"></div></div>
+          </div>
+          <ul class="checklist">
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="ramp-product"><span>Ramp on Cursor product deeply (core workflows, enterprise controls, security posture).</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="shadow-deals"><span>Shadow active deals and review call recordings to internalize winning patterns.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="meet-team"><span>Meet sales leadership, SEs, solutions partners, and CS to define collaboration cadence.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="learn-icp"><span>Learn ICP deeply for life sciences: buyer personas, triggers, objections, and proof points.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="study-competitors"><span>Study competitors: GitHub Copilot and Windsurf/Codeium; build clear differentiation language.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="certification"><span>Complete product certification and demo readiness milestones.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-1" data-item="target-list"><span>Create a named target list of 20 life sciences accounts with hypothesis-driven entry points.</span></label></li>
+          </ul>
+        </article>
+
+        <article class="phase-panel" id="phase-2" role="tabpanel">
+          <div class="phase-meta">
+            <p class="phase-goal"><strong>Phase Goal:</strong> Turn preparation into qualified conversations and a repeatable territory motion.</p>
+            <p class="phase-metric"><strong>Success Indicator:</strong> 15+ discovery calls completed, event presence established, and pipeline contribution underway.</p>
+          </div>
+          <div class="progress-row">
+            <div class="progress-top"><span>Progress</span><span id="phase-2-count">0/6 complete (0%)</span></div>
+            <div class="progress-track"><div class="progress-fill" id="phase-2-progress"></div></div>
+          </div>
+          <ul class="checklist">
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="outbound"><span>Launch outbound prospecting into the named target account list with tailored messaging.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="industry-events"><span>Attend at least 2 life sciences industry events/conferences for direct prospecting and insight.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="territory-plan"><span>Build territory plan segmented by pharma, biotech, and medtech with prioritization criteria.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="discovery-calls"><span>Run 15+ discovery calls to validate pain points and identify buying signals.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="se-partnership"><span>Build strong operating rhythm with SE/solutions partners on technical validation.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-2" data-item="pipeline-start"><span>Begin measurable pipeline contribution from qualified opportunities.</span></label></li>
+          </ul>
+        </article>
+
+        <article class="phase-panel" id="phase-3" role="tabpanel">
+          <div class="phase-meta">
+            <p class="phase-goal"><strong>Phase Goal:</strong> Convert momentum into closes, executive visibility, and expansion-oriented account strategy.</p>
+            <p class="phase-metric"><strong>Success Indicator:</strong> First deals advancing toward close, champion maps built, and leadership-ready territory narrative.</p>
+          </div>
+          <div class="progress-row">
+            <div class="progress-top"><span>Progress</span><span id="phase-3-count">0/5 complete (0%)</span></div>
+            <div class="progress-track"><div class="progress-fill" id="phase-3-progress"></div></div>
+          </div>
+          <ul class="checklist">
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-3" data-item="drive-deals"><span>Drive first opportunities through technical and commercial stages toward close.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-3" data-item="qualified-pipeline"><span>Build toward <strong>$X in qualified pipeline</strong> across prioritized life sciences accounts.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-3" data-item="champion-maps"><span>Create champion maps for top 5 target accounts (technical, business, executive sponsors).</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-3" data-item="present-leadership"><span>Present territory plan and account strategy updates to leadership with clear next actions.</span></label></li>
+            <li class="check-item"><label><input type="checkbox" data-phase="phase-3" data-item="cross-sell"><span>Identify cross-sell and expansion opportunities in existing enterprise accounts.</span></label></li>
+          </ul>
+        </article>
+
+        <div class="plan-controls">
+          <button id="reset-progress" class="ghost-btn" type="button">Reset Checklist Progress</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>Target Account Strategy</h2>
+      <p class="subtext">Prioritized by account maturity, developer footprint, and urgency for AI-enabled software productivity.</p>
+      <div class="tier-grid">
+        <article class="tier-card">
+          <span class="tier-label">Tier 1</span>
+          <h3>Large Pharma</h3>
+          <p class="tier-accounts">Pfizer, J&amp;J, Roche, AstraZeneca, Eli Lilly</p>
+          <p class="tier-why"><strong>Why Cursor:</strong> Large engineering organizations need standardized, secure AI coding workflows to improve release velocity across global teams while maintaining governance.</p>
+        </article>
+        <article class="tier-card">
+          <span class="tier-label">Tier 2</span>
+          <h3>Emerging Biotech</h3>
+          <p class="tier-accounts">Moderna, BioNTech, Regeneron, Vertex</p>
+          <p class="tier-why"><strong>Why Cursor:</strong> Lean teams benefit from immediate productivity gains and faster iteration cycles, especially where software accelerates R&amp;D and platform innovation.</p>
+        </article>
+        <article class="tier-card">
+          <span class="tier-label">Tier 3</span>
+          <h3>Medtech &amp; CROs</h3>
+          <p class="tier-accounts">Medtronic, IQVIA, Covance, Charles River Labs</p>
+          <p class="tier-why"><strong>Why Cursor:</strong> Data-heavy, regulated operations require reliable code quality and observability; Cursor can improve developer throughput without compromising control.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2 class="section-title"><span class="accent-dot"></span>Key Questions I Plan to Ask</h2>
+      <div class="questions">
+        <article class="question">What are the top attributes of the most successful enterprise reps at Cursor in year one, and where do life sciences motions differ from core enterprise?</article>
+        <article class="question">Which life sciences use cases are proving the strongest initial wedge today: platform engineering, internal tooling, data science, or regulated software teams?</article>
+        <article class="question">How does Cursor currently balance rapid product iteration with enterprise requirements around security, governance, and procurement in regulated industries?</article>
+        <article class="question">What does best-in-class collaboration look like between AEs, SEs, and post-sales teams when winning and expanding strategic Fortune 500 accounts?</article>
+        <article class="question">How is leadership thinking about competitive positioning versus Copilot and Windsurf/Codeium specifically in complex enterprise evaluations?</article>
+        <article class="question">What pipeline and ramp milestones define a strong first 90 days for this territory, and where can I create immediate leverage?</article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">Built with Cursor</footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "cursor-life-sciences-90-day-plan-v1";
+      const tabs = Array.from(document.querySelectorAll(".tab-btn"));
+      const panels = Array.from(document.querySelectorAll(".phase-panel"));
+      const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-phase][data-item]'));
+      const resetButton = document.getElementById("reset-progress");
+
+      function loadState() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function saveState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function updateProgress(phaseId) {
+        const phaseChecks = checkboxes.filter((box) => box.dataset.phase === phaseId);
+        const completed = phaseChecks.filter((box) => box.checked).length;
+        const total = phaseChecks.length;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        const fill = document.getElementById(phaseId + "-progress");
+        const count = document.getElementById(phaseId + "-count");
+        if (fill) {
+          fill.style.width = percent + "%";
+        }
+        if (count) {
+          count.textContent = completed + "/" + total + " complete (" + percent + "%)";
+        }
+      }
+
+      function updateAllProgress() {
+        const phaseIds = new Set(checkboxes.map((box) => box.dataset.phase));
+        phaseIds.forEach((phaseId) => updateProgress(phaseId));
+      }
+
+      function activatePhase(targetId) {
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.target === targetId;
+          tab.classList.toggle("active", isActive);
+          tab.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+        panels.forEach((panel) => {
+          panel.classList.toggle("active", panel.id === targetId);
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          activatePhase(tab.dataset.target);
+        });
+      });
+
+      const saved = loadState();
+      checkboxes.forEach((box) => {
+        const key = box.dataset.phase + ":" + box.dataset.item;
+        box.checked = saved[key] === true;
+        box.addEventListener("change", function () {
+          const current = loadState();
+          current[key] = box.checked;
+          saveState(current);
+          updateProgress(box.dataset.phase);
+        });
+      });
+
+      if (resetButton) {
+        resetButton.addEventListener("click", function () {
+          localStorage.removeItem(STORAGE_KEY);
+          checkboxes.forEach((box) => {
+            box.checked = false;
+          });
+          updateAllProgress();
+        });
+      }
+
+      updateAllProgress();
+
+      const revealables = Array.from(document.querySelectorAll(".reveal"));
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.13 }
+      );
+
+      revealables.forEach((element) => observer.observe(element));
+    })();
+  </script>
+</body>
+</html>
