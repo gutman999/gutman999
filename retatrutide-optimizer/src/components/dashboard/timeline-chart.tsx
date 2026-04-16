@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -19,19 +18,13 @@ type TimelineChartProps = {
 };
 
 export function TimelineChart({ phases }: TimelineChartProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const data = phases.map((phase) => ({
     name: phase.label,
     Baseline: phase.baselineMonths,
     Optimized: phase.optimizedMonths,
   }));
 
-  if (!isMounted) {
+  if (typeof window === "undefined") {
     return (
       <div className="flex h-96 w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
         Preparing chart...
