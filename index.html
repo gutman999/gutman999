@@ -4,19 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Go-To-Market - Life Sciences Plan</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cursor.com" crossorigin>
   <style>
+    @font-face {
+      font-family: "Cursor Gothic";
+      src: url("https://cursor.com/marketing-static/_next/static/media/CursorGothic_Regular-s.p.05-84umc_47y9.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Cursor Gothic";
+      src: url("https://cursor.com/marketing-static/_next/static/media/CursorGothic_Italic-s.p.0klm.ze1la4ej.woff2") format("woff2");
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Cursor Gothic";
+      src: url("https://cursor.com/marketing-static/_next/static/media/CursorGothic_Bold-s.p.15hkw~ebmtjvr.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Cursor Gothic";
+      src: url("https://cursor.com/marketing-static/_next/static/media/CursorGothic_BoldItalic-s.p.0cqzqaem~_s9y.woff2") format("woff2");
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Berkeley Mono";
+      src: url("https://cursor.com/marketing-static/_next/static/media/BerkeleyMono_Regular.p.0x~g-6.~uijej.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Berkeley Mono";
+      src: url("https://cursor.com/marketing-static/_next/static/media/BerkeleyMono_Oblique.p.0ljxuk9ar7~k_.woff2") format("woff2");
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
     :root {
-      --bg: #0a0a0a;
-      --bg-elev: #121416;
-      --bg-card: #14181b;
-      --text: #eaf7f3;
-      --muted: #9db2aa;
-      --accent: #26d9b6;
-      --accent-strong: #1ff1be;
-      --line: #213028;
+      --bg: #14120b;
+      --bg-elev: #1b1812;
+      --bg-card: #211d17;
+      --text: #f2f1ed;
+      --muted: #b6b9be;
+      --accent: #f54e00;
+      --accent-strong: #f8c762;
+      --line: #3c3935;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       --radius: 16px;
     }
@@ -32,9 +77,9 @@
     }
 
     body {
-      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: radial-gradient(1400px 700px at 5% -10%, rgba(38, 217, 182, 0.2), transparent 65%),
-                  radial-gradient(1200px 600px at 105% 20%, rgba(31, 241, 190, 0.12), transparent 60%),
+      font-family: "Cursor Gothic", "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1400px 700px at 5% -10%, rgba(245, 78, 0, 0.16), transparent 65%),
+                  radial-gradient(1200px 600px at 105% 20%, rgba(192, 133, 50, 0.14), transparent 60%),
                   var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -56,6 +101,7 @@
     }
 
     .section-title {
+      font-family: "Cursor Gothic", "Inter", system-ui, sans-serif;
       display: flex;
       align-items: center;
       gap: 0.7rem;
@@ -70,7 +116,7 @@
       height: 11px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 16px rgba(38, 217, 182, 0.8);
+      box-shadow: 0 0 16px rgba(245, 78, 0, 0.42);
     }
 
     .hero {
@@ -82,7 +128,7 @@
     .hero-card {
       border: 1px solid var(--line);
       border-radius: 24px;
-      background: linear-gradient(170deg, rgba(38, 217, 182, 0.12), rgba(20, 24, 27, 0.92) 40%);
+      background: linear-gradient(170deg, rgba(245, 78, 0, 0.14), rgba(33, 29, 23, 0.92) 40%);
       box-shadow: var(--shadow);
       padding: clamp(1.4rem, 3vw, 2.6rem);
     }
@@ -103,8 +149,8 @@
       width: clamp(130px, 16vw, 210px);
       aspect-ratio: 4 / 5;
       border-radius: 18px;
-      border: 1px solid #2f4a41;
-      background: linear-gradient(170deg, rgba(38, 217, 182, 0.15), rgba(20, 24, 27, 0.9));
+      border: 1px solid #4a443b;
+      background: linear-gradient(170deg, rgba(245, 78, 0, 0.16), rgba(33, 29, 23, 0.9));
       overflow: hidden;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
     }
@@ -131,7 +177,7 @@
       font-size: clamp(1.35rem, 2.1vw, 1.8rem);
       font-weight: 800;
       letter-spacing: 0.08em;
-      color: #d7fff4;
+      color: #f7f7f4;
     }
 
     .tag {
@@ -139,9 +185,9 @@
       align-items: center;
       gap: 0.5rem;
       font-size: 0.78rem;
-      border: 1px solid #2a4a3f;
-      color: #b2efe0;
-      background: rgba(38, 217, 182, 0.09);
+      border: 1px solid #4a443b;
+      color: #edecec;
+      background: rgba(245, 78, 0, 0.10);
       padding: 0.35rem 0.65rem;
       border-radius: 999px;
       margin-bottom: 1rem;
@@ -151,6 +197,7 @@
     }
 
     h1 {
+      font-family: "Cursor Gothic", "Inter", system-ui, sans-serif;
       font-size: clamp(1.8rem, 4vw, 3.1rem);
       line-height: 1.16;
       margin-bottom: 0.45rem;
@@ -159,7 +206,7 @@
 
     .hero-role {
       font-size: clamp(1rem, 2.2vw, 1.2rem);
-      color: #cbf7ed;
+      color: #edecec;
       margin-bottom: 1rem;
       font-weight: 600;
     }
@@ -185,7 +232,7 @@
 
     .stat {
       background: var(--bg-card);
-      border: 1px solid #25352d;
+      border: 1px solid #3c3935;
       border-radius: 14px;
       padding: 0.9rem 1rem;
       transition: transform 250ms ease, border-color 250ms ease;
@@ -193,7 +240,7 @@
 
     .stat:hover {
       transform: translateY(-4px);
-      border-color: #2f6757;
+      border-color: #c08532;
     }
 
     .stat-value {
@@ -221,14 +268,14 @@
 
     .vp-card {
       background: var(--bg-card);
-      border: 1px solid #273a31;
+      border: 1px solid #3c3935;
       border-radius: 14px;
       padding: 1.05rem;
       transition: border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
     }
 
     .vp-card:hover {
-      border-color: #349b81;
+      border-color: #c08532;
       transform: translateY(-5px);
       box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
     }
@@ -240,8 +287,8 @@
 
     .pill {
       font-size: 0.73rem;
-      color: #b3efe0;
-      border: 1px solid #2f5f51;
+      color: #edecec;
+      border: 1px solid #4a443b;
       border-radius: 999px;
       padding: 0.2rem 0.5rem;
       margin-left: 0.45rem;
@@ -268,9 +315,10 @@
     }
 
     .tab-btn {
-      border: 1px solid #2a4238;
-      background: #101515;
-      color: #c3e7dd;
+      font-family: "Cursor Gothic", "Inter", system-ui, sans-serif;
+      border: 1px solid #4a443b;
+      background: #1a1711;
+      color: #edecec;
       border-radius: 11px;
       padding: 0.58rem 0.9rem;
       font-weight: 600;
@@ -279,19 +327,19 @@
     }
 
     .tab-btn:hover {
-      border-color: #3c7b68;
-      color: #d5fff4;
+      border-color: #c08532;
+      color: #f7f7f4;
     }
 
     .tab-btn.active {
-      background: rgba(38, 217, 182, 0.16);
-      border-color: #3ea68a;
-      color: #dffcf6;
+      background: rgba(245, 78, 0, 0.16);
+      border-color: #f54e00;
+      color: #f7f7f4;
     }
 
     .phase-panel {
       display: none;
-      border: 1px solid #2b3f37;
+      border: 1px solid #4a443b;
       background: var(--bg-card);
       border-radius: 14px;
       padding: 1.2rem;
@@ -328,7 +376,7 @@
 
     .phase-goal strong,
     .phase-metric strong {
-      color: #d7fdf4;
+      color: #f7f7f4;
     }
 
     .progress-row {
@@ -340,14 +388,14 @@
       justify-content: space-between;
       margin-bottom: 0.35rem;
       font-size: 0.8rem;
-      color: #bae9dd;
+      color: #d9d5cf;
     }
 
     .progress-track {
       width: 100%;
       height: 10px;
-      background: #1c2522;
-      border: 1px solid #2e4039;
+      background: #26251e;
+      border: 1px solid #4a443b;
       border-radius: 999px;
       overflow: hidden;
     }
@@ -355,7 +403,7 @@
     .progress-fill {
       height: 100%;
       width: 0;
-      background: linear-gradient(90deg, #27d8b6, #1ff1be);
+      background: linear-gradient(90deg, #f54e00, #c08532);
       transition: width 300ms ease;
     }
 
@@ -372,7 +420,7 @@
       align-items: flex-start;
       cursor: pointer;
       font-size: 0.95rem;
-      color: #d4e7e1;
+      color: #edecec;
       transition: color 250ms ease;
     }
 
@@ -386,7 +434,7 @@
 
     .check-item input[type="checkbox"]:checked + span {
       text-decoration: line-through;
-      color: #86a69d;
+      color: #b6b9be;
     }
 
     .plan-controls {
@@ -397,8 +445,8 @@
 
     .ghost-btn {
       background: transparent;
-      border: 1px solid #355247;
-      color: #b9e5da;
+      border: 1px solid #4a443b;
+      color: #edecec;
       border-radius: 9px;
       padding: 0.45rem 0.75rem;
       cursor: pointer;
@@ -407,8 +455,8 @@
     }
 
     .ghost-btn:hover {
-      border-color: #4e856f;
-      color: #ddfff7;
+      border-color: #c08532;
+      color: #f7f7f4;
     }
 
     .tier-grid {
@@ -417,7 +465,7 @@
     }
 
     .tier-card {
-      border: 1px solid #2a4239;
+      border: 1px solid #4a443b;
       background: var(--bg-card);
       border-radius: 14px;
       padding: 1rem;
@@ -426,7 +474,7 @@
 
     .tier-card:hover {
       transform: translateY(-4px);
-      border-color: #3d7f6a;
+      border-color: #c08532;
     }
 
     .tier-label {
@@ -434,9 +482,9 @@
       font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #c0f5e8;
-      border: 1px solid #355447;
-      background: rgba(38, 217, 182, 0.1);
+      color: #f7f7f4;
+      border: 1px solid #4a443b;
+      background: rgba(245, 78, 0, 0.10);
       border-radius: 999px;
       padding: 0.25rem 0.5rem;
       margin-bottom: 0.7rem;
@@ -449,7 +497,7 @@
     }
 
     .tier-accounts {
-      color: #d4ebe4;
+      color: #edecec;
       font-size: 0.9rem;
       margin-bottom: 0.55rem;
     }
@@ -461,7 +509,7 @@
 
     .comp-wrap {
       margin-top: 1rem;
-      border: 1px solid #2b4339;
+      border: 1px solid #4a443b;
       border-radius: 14px;
       overflow: auto;
       background: var(--bg-card);
@@ -475,17 +523,17 @@
 
     .comp-table th,
     .comp-table td {
-      border-bottom: 1px solid #24362f;
+      border-bottom: 1px solid #3c3935;
       padding: 0.82rem 0.9rem;
       text-align: left;
       vertical-align: top;
       font-size: 0.9rem;
-      color: #d1e9e2;
+      color: #edecec;
     }
 
     .comp-table th {
-      background: #111816;
-      color: #c9f5e8;
+      background: #1a1711;
+      color: #f7f7f4;
       font-size: 0.82rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -501,29 +549,29 @@
     .comp-table .feature-col {
       width: 24%;
       font-weight: 600;
-      color: #e3faf4;
+      color: #f7f7f4;
     }
 
     .comp-table .cursor-col,
     .comp-table th.cursor-col {
-      background: linear-gradient(160deg, rgba(38, 217, 182, 0.14), rgba(38, 217, 182, 0.05));
-      border-left: 1px solid #2e6656;
-      border-right: 1px solid #2e6656;
+      background: linear-gradient(160deg, rgba(245, 78, 0, 0.14), rgba(192, 133, 50, 0.08));
+      border-left: 1px solid #c08532;
+      border-right: 1px solid #c08532;
     }
 
     .comp-table td.cursor-col {
-      color: #e8fff9;
+      color: #f2f1ed;
     }
 
     .comp-badge {
       display: inline-block;
       margin-left: 0.4rem;
       padding: 0.18rem 0.45rem;
-      border: 1px solid #33735f;
+      border: 1px solid #c08532;
       border-radius: 999px;
       font-size: 0.68rem;
-      color: #d8fff4;
-      background: rgba(38, 217, 182, 0.16);
+      color: #f7f7f4;
+      background: rgba(245, 78, 0, 0.16);
       font-weight: 700;
       letter-spacing: 0.05em;
       vertical-align: middle;
@@ -532,7 +580,7 @@
     .comp-note {
       margin-top: 0.8rem;
       font-size: 0.82rem;
-      color: #9bb1aa;
+      color: #b6b9be;
     }
 
     .questions {
@@ -542,11 +590,11 @@
     }
 
     .question {
-      border: 1px solid #2b4138;
+      border: 1px solid #4a443b;
       border-radius: 14px;
       background: var(--bg-card);
       padding: 1rem;
-      color: #d6ece5;
+      color: #edecec;
       transition: transform 230ms ease, border-color 230ms ease;
       position: relative;
       min-height: 130px;
@@ -559,20 +607,20 @@
       top: 0.65rem;
       right: 0.75rem;
       font-size: 0.75rem;
-      color: #9ad7c8;
-      border: 1px solid #315447;
+      color: #d9d5cf;
+      border: 1px solid #4a443b;
       border-radius: 999px;
       padding: 0.2rem 0.45rem;
     }
 
     .question:hover {
       transform: translateY(-4px);
-      border-color: #3a7b67;
+      border-color: #c08532;
     }
 
     footer {
       text-align: center;
-      color: #7f9890;
+      color: #b6b9be;
       font-size: 0.82rem;
       padding: 0.8rem 0 2rem;
     }
@@ -611,6 +659,7 @@
       }
 
       .tab-btn {
+      font-family: "Cursor Gothic", "Inter", system-ui, sans-serif;
         padding: 0.52rem 0.72rem;
         font-size: 0.9rem;
       }
