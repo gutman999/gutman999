@@ -1,11 +1,15 @@
+import {
+  clinicalTrialSiteTherapeuticAreas,
+  clinicalTrialSites,
+  type ClinicalTrialSite,
+} from "@/seed/clinical-trial-sites";
+
 export type SiteStatus = "Planning" | "Recruiting" | "Active" | "At Risk";
 
-export type TrialSite = {
-  id: string;
+export type TrialSite = ClinicalTrialSite & {
   name: string;
   principalInvestigator: string;
   location: string;
-  therapeuticArea: string;
   enrollmentTarget: number;
   enrolledPatients: number;
   openCohorts: string[];
@@ -13,62 +17,71 @@ export type TrialSite = {
   lastUpdated: string;
 };
 
-export const trialSites: TrialSite[] = [
-  {
-    id: "site-101",
-    name: "Harbor Medical Center",
-    principalInvestigator: "Dr. Maya Patel",
-    location: "Boston, MA",
-    therapeuticArea: "Oncology",
-    enrollmentTarget: 60,
-    enrolledPatients: 44,
-    openCohorts: ["CRC-1L", "Melanoma-2L"],
-    status: "Active",
-    lastUpdated: "2026-04-12",
-  },
-  {
-    id: "site-114",
-    name: "Summit Research Institute",
-    principalInvestigator: "Dr. Kevin Walsh",
-    location: "Denver, CO",
-    therapeuticArea: "Autoimmune",
-    enrollmentTarget: 40,
-    enrolledPatients: 18,
-    openCohorts: ["RA-Bio", "Lupus-IND"],
-    status: "Recruiting",
-    lastUpdated: "2026-04-14",
-  },
-  {
-    id: "site-126",
-    name: "Pacific Clinical Group",
-    principalInvestigator: "Dr. Alejandra Cruz",
-    location: "San Diego, CA",
-    therapeuticArea: "Neurology",
-    enrollmentTarget: 35,
-    enrolledPatients: 27,
-    openCohorts: ["ALS-Phase2"],
-    status: "At Risk",
-    lastUpdated: "2026-04-10",
-  },
-  {
-    id: "site-130",
-    name: "Riverbend University Hospital",
-    principalInvestigator: "Dr. Nathan Kim",
-    location: "Chicago, IL",
-    therapeuticArea: "Cardiology",
-    enrollmentTarget: 50,
-    enrolledPatients: 32,
-    openCohorts: ["HFpEF-Prime", "AF-Device"],
-    status: "Planning",
-    lastUpdated: "2026-04-15",
-  },
-];
+const cohortMap: Record<string, string[]> = {
+  Oncology: ["Solid Tumor 1L", "Adjuvant Biomarker Study"],
+  Cardiology: ["HF Outcomes", "AF Screening"],
+  Neurology: ["Cognitive Decline Registry", "Neuro-Inflammation Arm"],
+  Endocrinology: ["Type 2D Metabolic Cohort", "GLP-1 Outcomes"],
+  Immunology: ["Autoimmune Response Panel", "Biologic Optimization"],
+  Pulmonology: ["COPD Exacerbation Track", "Asthma Severe Subset"],
+  Gastroenterology: ["IBD Longitudinal Cohort", "Liver Fibrosis Panel"],
+};
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getEnrollmentTarget(site: ClinicalTrialSite) {
+  return clamp(Math.round(site.eligiblePatientCount * 0.22), 35, 140);
+}
+
+function getEnrolledPatients(site: ClinicalTrialSite, target: number) {
+  const projectedQuarterlyEnrollment = site.historicalEnrollmentRate * 3;
+  const retentionAdjusted = projectedQuarterlyEnrollment * (site.retentionRate / 100);
+  return clamp(Math.round(retentionAdjusted), 10, target);
+}
+
+function getSiteStatus(site: ClinicalTrialSite, enrolledPatients: number, target: number): SiteStatus {
+  if (site.startupDays > 120) {
+    return "Planning";
+  }
+  if (site.retentionRate < 78) {
+    return "At Risk";
+  }
+  const enrollmentProgress = enrolledPatients / target;
+  if (enrollmentProgress < 0.55) {
+    return "Recruiting";
+  }
+  return "Active";
+}
+
+function getOpenCohorts(therapeuticArea: string) {
+  return cohortMap[therapeuticArea] ?? [`${therapeuticArea} Expansion Cohort`];
+}
+
+export const trialSites: TrialSite[] = clinicalTrialSites.map((site, index) => {
+  const enrollmentTarget = getEnrollmentTarget(site);
+  const enrolledPatients = getEnrolledPatients(site, enrollmentTarget);
+  const dayOfMonth = String((index % 20) + 1).padStart(2, "0");
+
+  return {
+    ...site,
+    name: site.siteName,
+    principalInvestigator: site.piName,
+    location: site.region,
+    enrollmentTarget,
+    enrolledPatients,
+    openCohorts: getOpenCohorts(site.therapeuticArea),
+    status: getSiteStatus(site, enrolledPatients, enrollmentTarget),
+    lastUpdated: `2026-04-${dayOfMonth}`,
+  };
+});
 
 export const dashboardStats = [
   {
     label: "Total Trial Sites",
     value: trialSites.length.toString(),
-    detail: "Across 4 therapeutic areas",
+    detail: `Across ${clinicalTrialSiteTherapeuticAreas.length} therapeutic areas`,
   },
   {
     label: "Currently Active",
@@ -82,7 +95,7 @@ export const dashboardStats = [
     value: trialSites
       .reduce((total, site) => total + site.enrolledPatients, 0)
       .toString(),
-    detail: "of 185 target participants",
+    detail: `of ${trialSites.reduce((total, site) => total + site.enrollmentTarget, 0)} target participants`,
   },
   {
     label: "At-Risk Sites",
@@ -94,3 +107,6 @@ export const dashboardStats = [
 export function getSiteById(siteId: string) {
   return trialSites.find((site) => site.id === siteId);
 }
+
+export { clinicalTrialSites, clinicalTrialSiteTherapeuticAreas };
+export type { ClinicalTrialSite };
