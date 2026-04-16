@@ -146,6 +146,42 @@ export default function Dashboard() {
 
     const riskScore = Math.min(100, Math.round(riskScoreRaw));
 
+    const timeSavedBreakdown = [
+      {
+        label: "Enrollment acceleration",
+        baseline: `${baseline.enrollmentMonths} months`,
+        current: `${inputs.enrollmentMonths} months`,
+        monthsSaved: Math.max(0, baseline.enrollmentMonths - inputs.enrollmentMonths),
+      },
+      {
+        label: "Fewer protocol amendments",
+        baseline: `${baseline.protocolAmendments} amendments`,
+        current: `${inputs.protocolAmendments} amendments`,
+        monthsSaved: Math.max(
+          0,
+          (baseline.protocolAmendments - inputs.protocolAmendments) * 1.5,
+        ),
+      },
+      {
+        label: "Faster database lock",
+        baseline: `${baseline.dbLockMonths} months`,
+        current: `${inputs.dbLockMonths} months`,
+        monthsSaved: Math.max(0, baseline.dbLockMonths - inputs.dbLockMonths),
+      },
+      {
+        label: "Faster submission prep",
+        baseline: `${baseline.submissionPrepMonths} months`,
+        current: `${inputs.submissionPrepMonths} months`,
+        monthsSaved: Math.max(
+          0,
+          baseline.submissionPrepMonths - inputs.submissionPrepMonths,
+        ),
+      },
+    ].map((row) => ({
+      ...row,
+      monthsSaved: Number(row.monthsSaved.toFixed(1)),
+    }));
+
     return {
       baselineTotal: Number(baselineTotal.toFixed(1)),
       optimizedTotal: Number(optimizedTotal.toFixed(1)),
@@ -158,6 +194,7 @@ export default function Dashboard() {
         { name: "Baseline", months: Number(baselineTotal.toFixed(1)) },
         { name: "Optimized", months: Number(optimizedTotal.toFixed(1)) },
       ],
+      timeSavedBreakdown,
     };
   }, [inputs]);
 
@@ -333,6 +370,34 @@ export default function Dashboard() {
                     <Bar dataKey="months" name="Total Months to Launch" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-4 text-xl font-semibold">Where Time Was Saved</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[520px] text-left text-sm">
+                  <thead className="border-b border-white/10 text-xs uppercase tracking-wide text-slate-400">
+                    <tr>
+                      <th className="pb-2 pr-4 font-medium">Driver</th>
+                      <th className="pb-2 pr-4 font-medium">Baseline</th>
+                      <th className="pb-2 pr-4 font-medium">Current Scenario</th>
+                      <th className="pb-2 text-right font-medium">Estimated Months Saved</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.timeSavedBreakdown.map((row) => (
+                      <tr key={row.label} className="border-b border-white/5 last:border-0">
+                        <td className="py-3 pr-4 text-slate-200">{row.label}</td>
+                        <td className="py-3 pr-4 text-slate-300">{row.baseline}</td>
+                        <td className="py-3 pr-4 text-slate-300">{row.current}</td>
+                        <td className="py-3 text-right font-medium text-cyan-200">
+                          {row.monthsSaved.toFixed(1)} months
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
 
