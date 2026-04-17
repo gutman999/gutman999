@@ -12,9 +12,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Retatrutide Time-to-Market Optimizer",
+  title: "David Gutshall | Cribl Enterprise Business Plan v2",
   description:
-    "Strategic pharma timeline simulation built for a Cursor interview demo.",
+    "Named account strategy, 30-60-90 plan, and executive talk track for a Cribl enterprise sales interview.",
 };
 
 export default function RootLayout({
