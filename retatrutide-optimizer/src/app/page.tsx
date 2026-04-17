@@ -275,6 +275,15 @@ const smoothScrollTo = (sectionId: string): void => {
   document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
 };
 
+const handleAnchorJump = (
+  event: React.MouseEvent<HTMLAnchorElement>,
+  sectionId: string,
+): void => {
+  event.preventDefault();
+  smoothScrollTo(sectionId);
+  window.history.replaceState(null, "", `#${sectionId}`);
+};
+
 export default function Home() {
   const [activeView, setActiveView] = useState<OverviewView>("thesis");
   const [activeFilter, setActiveFilter] = useState<FilterValue>("all");
@@ -332,16 +341,32 @@ export default function Home() {
           </div>
         </div>
         <div className="nav-actions">
-          <a className="btn" href="#overview">
+          <a
+            className="btn"
+            href="#overview"
+            onClick={(event) => handleAnchorJump(event, "overview")}
+          >
             Overview
           </a>
-          <a className="btn" href="#accounts">
+          <a
+            className="btn"
+            href="#accounts"
+            onClick={(event) => handleAnchorJump(event, "accounts")}
+          >
             Accounts
           </a>
-          <a className="btn" href="#plan90">
+          <a
+            className="btn"
+            href="#plan90"
+            onClick={(event) => handleAnchorJump(event, "plan90")}
+          >
             30-60-90
           </a>
-          <a className="btn" href="#talktrack">
+          <a
+            className="btn"
+            href="#talktrack"
+            onClick={(event) => handleAnchorJump(event, "talktrack")}
+          >
             Talk Track
           </a>
           <button className="btn primary" onClick={() => window.print()}>

@@ -410,6 +410,10 @@ h1 {
   margin-bottom: 18px;
 }
 
+.section[id] {
+  scroll-margin-top: 92px;
+}
+
 .section-head {
   display: flex;
   align-items: flex-end;
