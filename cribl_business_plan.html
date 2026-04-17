@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cribl Business Plan</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text: #1a2433;
+      --muted: #5a6b82;
+      --accent: #3657ff;
+      --line: #d9e1ef;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #22305a, #3657ff);
+      color: #fff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 900px;
+      opacity: 0.95;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 1.5rem auto 2.5rem;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 1px 3px rgba(10, 27, 60, 0.08);
+    }
+
+    section h2 {
+      margin: 0 0 0.5rem;
+      color: #20337b;
+      font-size: 1.08rem;
+    }
+
+    ul {
+      margin: 0.4rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    li + li {
+      margin-top: 0.35rem;
+    }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+    }
+
+    .kpi div {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.55rem 0.6rem;
+      background: #fbfdff;
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 0.95rem;
+      color: #1e2f78;
+    }
+
+    .kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background: #eef3ff;
+      color: #1f337f;
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    footer {
+      max-width: 1100px;
+      margin: 0 auto 2.5rem;
+      padding: 0 1rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cribl Business Plan</h1>
+    <p>
+      Scale Cribl into the default telemetry data routing and optimization layer for enterprise observability and security,
+      enabling organizations to control data cost while improving reliability and analytics quality.
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <h2>1) Executive Summary</h2>
+      <p>
+        Cribl delivers a unified data pipeline for logs, metrics, traces, and security events. The company reduces
+        ingestion and storage costs, improves data quality, and accelerates incident response by routing the right data
+        to the right destination in real time.
+      </p>
+      <div class="kpi">
+        <div>
+          <strong>$100M+ ARR Target</strong>
+          <span>within 3 years</span>
+        </div>
+        <div>
+          <strong>120%+ NRR</strong>
+          <span>expansion-led growth</span>
+        </div>
+        <div>
+          <strong>40%+ FCF Margin</strong>
+          <span>at mature scale</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2) Problem and Opportunity</h2>
+      <ul>
+        <li>Telemetry volumes are growing 20-40% annually, driving unsustainable observability and SIEM costs.</li>
+        <li>Teams struggle with fragmented tooling and duplicate pipelines across security and operations.</li>
+        <li>Compliance needs require selective retention and policy-driven redaction before storage.</li>
+        <li>Enterprises need vendor-neutral control over data flows to avoid lock-in and optimize spend.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3) Product and Value Proposition</h2>
+      <ul>
+        <li><strong>Cribl Stream:</strong> route, transform, enrich, sample, and redact data in real time.</li>
+        <li><strong>Cribl Edge:</strong> collect and process telemetry close to source for lower transport cost.</li>
+        <li><strong>Cribl Search:</strong> search data in place across object stores and observability backends.</li>
+        <li><strong>Cribl Lake:</strong> cost-efficient long-term telemetry lake with governance and access controls.</li>
+      </ul>
+      <p class="note">Primary customer value: 30-70% telemetry cost reduction with better investigative signal quality.</p>
+    </section>
+
+    <section>
+      <h2>4) Target Market</h2>
+      <ul>
+        <li><strong>Primary ICP:</strong> enterprise and upper-midmarket with annual observability spend above $500K.</li>
+        <li><strong>Personas:</strong> platform engineering, SRE leaders, SOC leaders, and cloud cost owners.</li>
+        <li><strong>Vertical focus:</strong> financial services, healthcare, SaaS, and public sector.</li>
+        <li><strong>TAM thesis:</strong> data routing layer becomes standard in every multi-tool telemetry stack.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5) Go-to-Market Strategy</h2>
+      <ul>
+        <li>Land with one high-cost telemetry workload and prove savings within 30-60 days.</li>
+        <li>Expand from logs into security, metrics, traces, and compliance use cases.</li>
+        <li>Partner ecosystem: hyperscalers, MSSPs, SI partners, and observability vendors.</li>
+        <li>Technical content engine: benchmarking, architecture guides, and customer ROI playbooks.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6) Operating Model and Milestones</h2>
+      <ul>
+        <li>Product-led proof-of-value with reusable deployment templates and policy packs.</li>
+        <li>Quarterly release cadence focused on governance, AI-assisted pipelines, and data quality SLAs.</li>
+        <li>Customer success aligned to measurable savings and reduced MTTR outcomes.</li>
+      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Milestone</th>
+            <th>Timeline</th>
+            <th>Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>100 reference accounts</td>
+            <td>Year 1</td>
+            <td>Category credibility and repeatable sales motions</td>
+          </tr>
+          <tr>
+            <td>Global partner channel</td>
+            <td>Year 2</td>
+            <td>Lower CAC and regional market acceleration</td>
+          </tr>
+          <tr>
+            <td>Multi-product platform attach &gt; 2.2</td>
+            <td>Year 3</td>
+            <td>Higher NRR and durable competitive moat</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>7) Financial Plan (Illustrative)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Year 1</th>
+            <th>Year 2</th>
+            <th>Year 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Revenue</td>
+            <td>$45M</td>
+            <td>$72M</td>
+            <td>$108M</td>
+          </tr>
+          <tr>
+            <td>Gross Margin</td>
+            <td>73%</td>
+            <td>76%</td>
+            <td>79%</td>
+          </tr>
+          <tr>
+            <td>Operating Margin</td>
+            <td>-18%</td>
+            <td>-4%</td>
+            <td>+9%</td>
+          </tr>
+          <tr>
+            <td>Net Revenue Retention</td>
+            <td>122%</td>
+            <td>124%</td>
+            <td>126%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">
+        Assumptions: enterprise expansion model, disciplined hiring, channel leverage, and continued telemetry data growth.
+      </p>
+    </section>
+
+    <section>
+      <h2>8) Risks and Mitigations</h2>
+      <ul>
+        <li><strong>Platform overlap risk:</strong> defend with open integrations and fastest time-to-value.</li>
+        <li><strong>Procurement pressure:</strong> package clear ROI and consumption governance guarantees.</li>
+        <li><strong>Execution complexity:</strong> standardize onboarding via blueprints and managed services.</li>
+        <li><strong>Data governance risk:</strong> invest in policy controls, auditing, and enterprise certifications.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    This document is an illustrative strategic plan intended for planning and discussion.
+  </footer>
+</body>
+</html>
