@@ -98,6 +98,9 @@ def process_clinical_trial_data(
             )
             continue
 
+        if patient["age"] > 65:
+            risk = "high"
+
         summary = grouped[group]
         summary["total_patients"] += 1
 
