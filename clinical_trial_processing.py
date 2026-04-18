@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+from math import isfinite
 from statistics import mean, median
 from typing import Any, Iterable, Mapping
+
+
+def _is_blank(value: Any) -> bool:
+    return value is None or (isinstance(value, str) and not value.strip())
 
 
 def _parse_group(value: Any) -> str | None:
@@ -15,13 +20,13 @@ def _parse_group(value: Any) -> str | None:
 
 
 def _parse_age(value: Any) -> float | None:
-    if value is None or value == "":
+    if _is_blank(value) or isinstance(value, bool):
         return None
     try:
         age = float(value)
     except (TypeError, ValueError):
         return None
-    if age < 0 or age > 120:
+    if not isfinite(age) or age < 0 or age > 120:
         return None
     return age
 
@@ -35,19 +40,26 @@ def _parse_outcome(value: Any) -> tuple[str, float | str | None]:
     - "categorical": normalized string category
     """
 
-    if value is None:
+    if _is_blank(value):
         return "missing", None
     if isinstance(value, str):
         normalized = value.strip()
-        if not normalized:
-            return "missing", None
         try:
-            return "numeric", float(normalized)
+            numeric_value = float(normalized)
+            if not isfinite(numeric_value):
+                return "missing", None
+            return "numeric", numeric_value
         except ValueError:
             return "categorical", normalized
-    if isinstance(value, (int, float)) and not isinstance(value, bool):
-        return "numeric", float(value)
-    return "categorical", str(value).strip() or None
+    if isinstance(value, bool):
+        return "categorical", str(value)
+    if isinstance(value, (int, float)):
+        numeric_value = float(value)
+        if not isfinite(numeric_value):
+            return "missing", None
+        return "numeric", numeric_value
+    normalized = str(value).strip()
+    return ("categorical", normalized) if normalized else ("missing", None)
 
 
 def process_clinical_trial_data(
@@ -79,7 +91,39 @@ def process_clinical_trial_data(
     excluded_records: list[dict[str, Any]] = []
     input_count = 0
 
-    for idx, record in enumerate(patient_records):
+    if patient_records is None:
+        excluded_records.append(
+            {
+                "index": None,
+                "reason": "patient_records is None",
+                "record": None,
+            }
+        )
+    elif isinstance(patient_records, Mapping):
+        # Allow callers to provide a single record mapping by mistake.
+        patient_records = [patient_records]
+    elif isinstance(patient_records, (str, bytes)):
+        excluded_records.append(
+            {
+                "index": None,
+                "reason": "patient_records must be an iterable of mappings",
+                "record": patient_records,
+            }
+        )
+
+    try:
+        record_iterator = iter(patient_records or [])
+    except TypeError:
+        excluded_records.append(
+            {
+                "index": None,
+                "reason": "patient_records is not iterable",
+                "record": patient_records,
+            }
+        )
+        record_iterator = iter(())
+
+    for idx, record in enumerate(record_iterator):
         input_count += 1
         if not isinstance(record, Mapping):
             excluded_records.append(
@@ -98,15 +142,12 @@ def process_clinical_trial_data(
             )
             continue
 
-        if patient["age"] > 65:
-            risk = "high"
-
         summary = grouped[group]
         summary["total_patients"] += 1
 
         raw_age = record.get("age")
         age = _parse_age(raw_age)
-        if raw_age is None or raw_age == "":
+        if _is_blank(raw_age):
             summary["missing_age_count"] += 1
         elif age is None:
             summary["invalid_age_count"] += 1
