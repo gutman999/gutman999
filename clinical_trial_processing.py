@@ -91,6 +91,7 @@ def process_clinical_trial_data(
     excluded_records: list[dict[str, Any]] = []
     input_count = 0
 
+    normalized_records: Iterable[Any]
     if patient_records is None:
         excluded_records.append(
             {
@@ -99,9 +100,10 @@ def process_clinical_trial_data(
                 "record": None,
             }
         )
+        normalized_records = []
     elif isinstance(patient_records, Mapping):
         # Allow callers to provide a single record mapping by mistake.
-        patient_records = [patient_records]
+        normalized_records = [patient_records]
     elif isinstance(patient_records, (str, bytes)):
         excluded_records.append(
             {
@@ -110,15 +112,18 @@ def process_clinical_trial_data(
                 "record": patient_records,
             }
         )
+        normalized_records = []
+    else:
+        normalized_records = patient_records
 
     try:
-        record_iterator = iter(patient_records or [])
+        record_iterator = iter(normalized_records)
     except TypeError:
         excluded_records.append(
             {
                 "index": None,
                 "reason": "patient_records is not iterable",
-                "record": patient_records,
+                "record": normalized_records,
             }
         )
         record_iterator = iter(())
