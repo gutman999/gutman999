@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cursor Interview Demo - Intent to Execution</title>
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-soft: #0f162b;
+      --panel: #101a33;
+      --panel-2: #0c1428;
+      --line: #24335a;
+      --text: #edf2ff;
+      --muted: #9fb0d8;
+      --accent: #7d9cff;
+      --accent-2: #56e9cf;
+      --ok: #5af3aa;
+      --warning: #ffc76b;
+      --danger: #ff6b88;
+      --shadow: 0 24px 50px rgba(3, 8, 18, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(125, 156, 255, 0.22), transparent 38%),
+        radial-gradient(circle at 95% 5%, rgba(86, 233, 207, 0.18), transparent 32%),
+        var(--bg);
+      padding: 30px clamp(16px, 3vw, 34px) 36px;
+    }
+
+    .shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero {
+      background: linear-gradient(150deg, rgba(20, 34, 67, 0.9), rgba(12, 20, 40, 0.92));
+      border: 1px solid rgba(143, 167, 232, 0.2);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 3vw, 30px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(95deg, transparent 35%, rgba(255, 255, 255, 0.08), transparent 65%);
+      transform: translateX(-110%);
+      animation: sheen 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sheen {
+      to {
+        transform: translateX(110%);
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-2);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 12px rgba(86, 233, 207, 0.9);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 4vw, 2.7rem);
+      line-height: 1.15;
+      max-width: 950px;
+    }
+
+    .subhead {
+      margin: 12px 0 0;
+      color: var(--muted);
+      max-width: 900px;
+      font-size: 1rem;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      background: linear-gradient(145deg, rgba(16, 26, 51, 0.96), rgba(9, 15, 30, 0.98));
+      border: 1px solid rgba(143, 167, 232, 0.16);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 600px;
+    }
+
+    .repo-sidebar {
+      background: rgba(7, 11, 23, 0.8);
+      border-right: 1px solid rgba(143, 167, 232, 0.12);
+      padding: 14px;
+    }
+
+    .repo-title {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .file-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .file-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #d7e3ff;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      transition: 180ms ease;
+      background: rgba(125, 156, 255, 0.02);
+    }
+
+    .file-list li::before {
+      content: "•";
+      color: #7386b3;
+      margin-right: 6px;
+    }
+
+    .file-list li.active {
+      border-color: rgba(125, 156, 255, 0.54);
+      background: rgba(125, 156, 255, 0.18);
+      box-shadow: 0 0 0 1px rgba(125, 156, 255, 0.16) inset;
+    }
+
+    .file-list li.touched .tag {
+      color: var(--ok);
+      border-color: rgba(90, 243, 170, 0.5);
+      background: rgba(90, 243, 170, 0.13);
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(143, 167, 232, 0.35);
+      color: #b2c3ec;
+      flex-shrink: 0;
+    }
+
+    .editor-wrap {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      min-width: 0;
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(143, 167, 232, 0.12);
+      background: rgba(9, 15, 30, 0.65);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .window-dots span:nth-child(1) { background: #ff6e7e; }
+    .window-dots span:nth-child(2) { background: #ffcf6d; }
+    .window-dots span:nth-child(3) { background: #53f2a3; }
+
+    .file-pill {
+      font-size: 0.84rem;
+      color: #c9d8ff;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(143, 167, 232, 0.25);
+      background: rgba(125, 156, 255, 0.11);
+      max-width: 64%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px 18px 12px;
+      overflow: auto;
+      color: #d9e7ff;
+      font-size: 0.83rem;
+      line-height: 1.6;
+      background: linear-gradient(180deg, rgba(12, 20, 38, 0.95), rgba(10, 16, 33, 0.98));
+      border-bottom: 1px solid rgba(143, 167, 232, 0.12);
+      white-space: pre;
+      min-height: 280px;
+    }
+
+    .prompt-box {
+      margin: 14px;
+      border: 1px solid rgba(143, 167, 232, 0.24);
+      border-radius: 12px;
+      background: rgba(8, 13, 25, 0.8);
+      padding: 12px;
+    }
+
+    .prompt-box label {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    .prompt-box textarea {
+      width: 100%;
+      border: 1px solid rgba(143, 167, 232, 0.2);
+      border-radius: 10px;
+      background: rgba(9, 16, 30, 0.85);
+      color: #dfe9ff;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      padding: 10px 12px;
+      resize: none;
+      min-height: 86px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      padding: 0 14px 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 130ms ease, filter 130ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    .btn-run {
+      background: linear-gradient(120deg, var(--accent), #95adff);
+      color: #07112b;
+    }
+
+    .btn-talk {
+      background: rgba(86, 233, 207, 0.16);
+      color: #c8fff4;
+      border: 1px solid rgba(86, 233, 207, 0.45);
+    }
+
+    .insights {
+      padding: 14px;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+
+    .metric-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .metric {
+      background: rgba(9, 15, 30, 0.72);
+      border: 1px solid rgba(143, 167, 232, 0.2);
+      border-radius: 10px;
+      padding: 11px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      margin-top: 4px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .progress-wrap {
+      border: 1px solid rgba(143, 167, 232, 0.2);
+      border-radius: 10px;
+      padding: 11px;
+      background: rgba(9, 15, 30, 0.7);
+    }
+
+    .progress-track {
+      margin-top: 8px;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(125, 156, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 260ms ease;
+    }
+
+    .activity {
+      border: 1px solid rgba(143, 167, 232, 0.2);
+      border-radius: 10px;
+      padding: 11px;
+      background: rgba(9, 15, 30, 0.7);
+      min-height: 180px;
+    }
+
+    .activity ul {
+      list-style: none;
+      margin: 10px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    .activity li {
+      font-size: 0.83rem;
+      color: #d4e3ff;
+      padding: 8px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(143, 167, 232, 0.17);
+      background: rgba(125, 156, 255, 0.07);
+    }
+
+    .talk-track {
+      border: 1px solid rgba(86, 233, 207, 0.35);
+      border-radius: 10px;
+      background: rgba(5, 23, 23, 0.75);
+      padding: 12px;
+      display: none;
+    }
+
+    .talk-track.visible {
+      display: block;
+    }
+
+    .talk-track h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: #b9fff1;
+    }
+
+    .talk-track p {
+      margin: 0;
+      color: #d7fbf4;
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1040px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .repo-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(143, 167, 232, 0.12);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <span class="eyebrow">Interview Demo</span>
+      <h1>From intent to execution: Cursor orchestrates the whole workflow, not just the next line of code.</h1>
+      <p class="subhead">
+        One natural-language prompt kicks off repo-wide edits, updates test coverage, and produces a review-ready change set.
+      </p>
+    </section>
+
+    <section class="main-grid">
+      <article class="panel workspace">
+        <aside class="repo-sidebar">
+          <div class="repo-title">Repository</div>
+          <ul class="file-list" id="fileList">
+            <li data-file="src/api/orders.ts">src/api/orders.ts <span class="tag">idle</span></li>
+            <li data-file="src/services/pricing.ts">src/services/pricing.ts <span class="tag">idle</span></li>
+            <li data-file="src/ui/CheckoutPanel.tsx">src/ui/CheckoutPanel.tsx <span class="tag">idle</span></li>
+            <li data-file="tests/checkout.test.ts">tests/checkout.test.ts <span class="tag">idle</span></li>
+            <li data-file="docs/release-notes.md">docs/release-notes.md <span class="tag">idle</span></li>
+          </ul>
+        </aside>
+
+        <div class="editor-wrap">
+          <div class="editor-header">
+            <div class="window-dots"><span></span><span></span><span></span></div>
+            <div class="file-pill" id="activeFile">Ready to run workflow</div>
+          </div>
+          <pre id="codePane">// Press "Run Demo" to simulate a Cursor workflow across multiple files.
+// Cursor starts from natural-language intent and handles implementation,
+// tests, and documentation updates in one connected flow.</pre>
+
+          <div class="prompt-box">
+            <label for="prompt">Prompt</label>
+            <textarea id="prompt" readonly>“Add a priority shipping option with dynamic pricing, update checkout UI copy, add tests for edge cases, and include release notes.”</textarea>
+          </div>
+
+          <div class="controls">
+            <button class="btn-run" id="runDemo">Run Demo</button>
+            <button class="btn-talk" id="toggleTalk">Show Talk Track</button>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel insights">
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Files updated</div>
+            <div class="metric-value" id="filesUpdated">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Workflow time</div>
+            <div class="metric-value" id="workflowTime">0.0s</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Steps completed</div>
+            <div class="metric-value" id="stepsDone">0/5</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="metric-label">Execution progress</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <section class="activity">
+          <div class="metric-label">Workflow log</div>
+          <ul id="activityLog">
+            <li>Idle: waiting for prompt execution.</li>
+          </ul>
+        </section>
+
+        <section class="talk-track" id="talkTrack">
+          <h3>Interview / sales narrative</h3>
+          <p>
+            "Autocomplete helps with syntax. Cursor helps with outcomes. I can describe business intent once, and Cursor executes across API, UI, tests, and docs while keeping context between files. That shortens the path from idea to production-ready change and lets engineers focus on judgment instead of repetitive glue work."
+          </p>
+        </section>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const steps = [
+      {
+        file: "src/services/pricing.ts",
+        message: "Implement dynamic priority-shipping pricing rules.",
+        code: `export function calculatePriorityShipping(subtotal: number, zone: "local" | "national") {\n  const base = zone === "local" ? 8 : 14;\n  const surge = subtotal > 180 ? 1.25 : 1;\n  return Math.round(base * surge);\n}\n\nexport function canOfferPriorityShipping(stockAgeHours: number) {\n  return stockAgeHours <= 24;\n}`
+      },
+      {
+        file: "src/api/orders.ts",
+        message: "Wire pricing service into checkout API response.",
+        code: `import { calculatePriorityShipping, canOfferPriorityShipping } from "../services/pricing";\n\nexport function getShippingOptions(subtotal: number, zone: "local" | "national", stockAgeHours: number) {\n  const options = [{ id: "standard", etaDays: 4, amount: 0 }];\n\n  if (canOfferPriorityShipping(stockAgeHours)) {\n    options.push({\n      id: "priority",\n      etaDays: 1,\n      amount: calculatePriorityShipping(subtotal, zone)\n    });\n  }\n\n  return options;\n}`
+      },
+      {
+        file: "src/ui/CheckoutPanel.tsx",
+        message: "Update checkout UI copy and render new option.",
+        code: `const labelMap = {\n  standard: "Standard (Free · arrives in 4 days)",\n  priority: "Priority (next-day delivery)"\n};\n\n{shippingOptions.map(option => (\n  <ShippingOption\n    key={option.id}\n    label={labelMap[option.id]}\n    price={option.amount}\n  />\n))}`
+      },
+      {
+        file: "tests/checkout.test.ts",
+        message: "Add edge-case tests for eligibility and surge pricing.",
+        code: `it("hides priority option when inventory is stale", () => {\n  const options = getShippingOptions(90, "local", 30);\n  expect(options.find((o) => o.id === "priority")).toBeUndefined();\n});\n\nit("applies surge multiplier above threshold", () => {\n  expect(calculatePriorityShipping(220, "national")).toBe(18);\n});`
+      },
+      {
+        file: "docs/release-notes.md",
+        message: "Document feature behavior for release handoff.",
+        code: `## Priority Shipping\n- Added dynamic pricing based on order subtotal and delivery zone.\n- Priority option appears only when inventory freshness allows next-day fulfillment.\n- Checkout messaging updated with clear ETA expectations.\n- Test coverage includes stale-inventory and surge-pricing scenarios.`
+      }
+    ];
+
+    const fileList = document.getElementById("fileList");
+    const codePane = document.getElementById("codePane");
+    const activeFile = document.getElementById("activeFile");
+    const filesUpdated = document.getElementById("filesUpdated");
+    const workflowTime = document.getElementById("workflowTime");
+    const stepsDone = document.getElementById("stepsDone");
+    const progressFill = document.getElementById("progressFill");
+    const activityLog = document.getElementById("activityLog");
+    const runDemoButton = document.getElementById("runDemo");
+    const toggleTalkButton = document.getElementById("toggleTalk");
+    const talkTrack = document.getElementById("talkTrack");
+
+    let timerInterval = null;
+    let running = false;
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function logActivity(text) {
+      const item = document.createElement("li");
+      item.textContent = text;
+      activityLog.prepend(item);
+    }
+
+    function setActiveFile(file) {
+      const items = fileList.querySelectorAll("li");
+      items.forEach((item) => item.classList.toggle("active", item.dataset.file === file));
+      activeFile.textContent = file;
+    }
+
+    function markTouched(file) {
+      const item = fileList.querySelector(`li[data-file="${file}"]`);
+      if (!item) return;
+      item.classList.add("touched");
+      const tag = item.querySelector(".tag");
+      if (tag) tag.textContent = "updated";
+    }
+
+    function resetDemo() {
+      fileList.querySelectorAll("li").forEach((item) => {
+        item.classList.remove("active", "touched");
+        const tag = item.querySelector(".tag");
+        if (tag) tag.textContent = "idle";
+      });
+      filesUpdated.textContent = "0";
+      workflowTime.textContent = "0.0s";
+      stepsDone.textContent = `0/${steps.length}`;
+      progressFill.style.width = "0%";
+      activityLog.innerHTML = "<li>Workflow reset. Ready to run.</li>";
+      codePane.textContent = "// Awaiting next execution...";
+      activeFile.textContent = "Ready to run workflow";
+    }
+
+    async function runDemo() {
+      if (running) return;
+      running = true;
+      runDemoButton.disabled = true;
+      resetDemo();
+
+      const touchedFiles = new Set();
+      const startedAt = performance.now();
+      timerInterval = setInterval(() => {
+        const elapsed = ((performance.now() - startedAt) / 1000).toFixed(1);
+        workflowTime.textContent = `${elapsed}s`;
+      }, 100);
+
+      for (let i = 0; i < steps.length; i += 1) {
+        const step = steps[i];
+        setActiveFile(step.file);
+        markTouched(step.file);
+        touchedFiles.add(step.file);
+
+        codePane.textContent = step.code;
+        logActivity(`${i + 1}. ${step.message}`);
+
+        filesUpdated.textContent = String(touchedFiles.size);
+        stepsDone.textContent = `${i + 1}/${steps.length}`;
+        progressFill.style.width = `${((i + 1) / steps.length) * 100}%`;
+
+        await sleep(1100);
+      }
+
+      clearInterval(timerInterval);
+      const total = ((performance.now() - startedAt) / 1000).toFixed(1);
+      workflowTime.textContent = `${total}s`;
+      logActivity("Done: changes are ready for review with linked context.");
+      runDemoButton.disabled = false;
+      running = false;
+    }
+
+    runDemoButton.addEventListener("click", runDemo);
+    toggleTalkButton.addEventListener("click", () => {
+      talkTrack.classList.toggle("visible");
+      const isVisible = talkTrack.classList.contains("visible");
+      toggleTalkButton.textContent = isVisible ? "Hide Talk Track" : "Show Talk Track";
+    });
+  </script>
+</body>
+</html>
